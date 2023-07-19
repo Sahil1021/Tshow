@@ -1,25 +1,48 @@
-import { createRouter, createWebHistory } from 'vue-router'
-import HomeView from '../views/HomeView.vue'
+import { createRouter, createWebHistory } from "vue-router";
+import Home from "../views/Home.vue";
+import Login from "../views/Login.vue";
+import Profile from "../views/Profile.vue";
+import Signup from "../views/Signup.vue";
+import UserHome from "../views/UserHome.vue";
+import AdminHome from "../views/AdminHome.vue";
 
 const routes = [
+  { path: "/", name: "Home", component: Home },
+  { path: "/signup", name: "Signup", component: Signup },
+  { path: "/login", name: "Login", component: Login },
+  { path: "/profile", name: "Profile", component: Profile },
   {
-    path: '/',
-    name: 'home',
-    component: HomeView
+    path: "/userhome",
+    name: "UserHome",
+    component: UserHome,
+    meta: { requiresAuth: true, role: "user" }, // Requires authentication and role=user
   },
   {
-    path: '/about',
-    name: 'about',
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    component: () => import(/* webpackChunkName: "about" */ '../views/AboutView.vue')
-  }
-]
+    path: "/adminhome",
+    name: "AdminHome",
+    component: AdminHome,
+    meta: { requiresAuth: true, role: "admin" }, // Requires authentication and role=admin
+  },
+];
 
 const router = createRouter({
-  history: createWebHistory(process.env.BASE_URL),
-  routes
-})
+  history: createWebHistory(),
+  routes,
+});
 
-export default router
+router.beforeEach((to, from, next) => {
+  // Check if the route requires authentication and role
+  if (to.matched.some((record) => record.meta.requiresAuth)) {
+    const role = localStorage.getItem("role");
+    if (!role || role !== to.meta.role) {
+      // Role does not match or user is not authenticated
+      next("/login"); // Redirect to login page
+    } else {
+      next(); // Proceed to the requested page
+    }
+  } else {
+    next(); // Proceed to the requested page (no authentication required)
+  }
+});
+
+export default router;

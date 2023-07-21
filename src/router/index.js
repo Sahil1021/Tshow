@@ -7,6 +7,8 @@ import UserHome from "../views/UserHome.vue";
 import AdminHome from "../views/AdminHome.vue";
 import TheatresList from "../views/TheatresList.vue";
 import CreateTheatre from "../views/CreateTheatre.vue";
+import CreateShow from "../views/CreateShow.vue";
+import ShowList from "../views/ShowList.vue";
 
 const routes = [
   { path: "/", name: "Home", component: Home },
@@ -35,6 +37,18 @@ const routes = [
     path: "/theatres/create",
     name: "CreateTheatre",
     component: CreateTheatre,
+    meta: { requiresAuth: true, role: "admin" },
+  },
+  {
+    path: "/shows/create",
+    name: "CreateShow",
+    component: CreateShow,
+    meta: { requiresAuth: true, role: "admin" },
+  },
+  {
+    path: "/shows",
+    name: "ShowList",
+    component: ShowList,
     meta: { requiresAuth: true, role: "admin" },
   },
 ];

@@ -1,16 +1,16 @@
 <template>
   <div>
-    <h1>Login</h1>
-    <form @submit.prevent="login">
+    <h1 class="mb-3">Login</h1>
+    <form class="container w-25" @submit.prevent="login">
       <label>Username:</label>
-      <input v-model="username" type="text" required />
+      <input class="form-control" v-model="username" type="text" required />
       <br />
       <label>Password:</label>
-      <input v-model="password" type="password" required />
+      <input class="form-control" v-model="password" type="password" required />
       <br />
-      <button type="submit">Login</button>
+      <button class="btn btn-primary mb-3" type="submit">Login</button>
     </form>
-    <router-link to="/signup">Don't have an account? Signup here</router-link>
+    Don't have an account? <router-link to="/signup">Signup here</router-link>
   </div>
 </template>
 

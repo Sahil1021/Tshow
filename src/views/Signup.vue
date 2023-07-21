@@ -1,28 +1,28 @@
 <template>
   <div>
-    <h1>Signup</h1>
-    <form @submit.prevent="signup">
+    <h1 class="mb-3">Signup</h1>
+    <form class="container w-25" @submit.prevent="signup">
       <label>Username:</label>
-      <input v-model="username" type="text" required />
+      <input class="form-control" v-model="username" type="text" required />
       <br />
       <label>Email:</label>
-      <input v-model="email" type="email" required />
+      <input class="form-control" v-model="email" type="email" required />
       <br />
       <label>Password:</label>
-      <input v-model="password" type="password" required />
+      <input class="form-control" v-model="password" type="password" required />
       <br />
       <label>Confirm Password:</label>
-      <input v-model="confirmPassword" type="password" required />
+      <input class="form-control" v-model="confirmPassword" type="password" required />
       <br />
       <label>Role:</label>
-      <select v-model="role" required>
+      <select class="form-control" v-model="role" required>
         <option value="user">User</option>
         <option value="admin">Admin</option>
       </select>
       <br />
-      <button type="submit">Signup</button>
+      <button class="btn btn-primary mb-3" type="submit">Signup</button>
     </form>
-    <router-link to="/login">Already have an account? Login here</router-link>
+    Already have an account? <router-link to="/login">Login here</router-link>
   </div>
 </template>
 

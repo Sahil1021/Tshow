@@ -9,14 +9,17 @@
       </template>
       <template v-if="isAuthenticated">
         <!-- Show these links only if user is authenticated -->
-        <router-link v-if="userRole === 'user'" to="/userhome"
-          >User Home</router-link
-        >
-        |
-        <router-link v-if="userRole === 'admin'" to="/adminhome"
-          >Admin Home</router-link
-        >
-        |
+
+        <template v-if="userRole === 'user'">
+          <router-link to="/userhome">User Home</router-link> |
+          <router-link to="/Profile">User Profile</router-link> |
+        </template>
+        <template v-if="userRole === 'admin'">
+          <router-link to="/adminhome">Admin Home</router-link> |
+          <router-link to="/Profile">Admin Profile</router-link> |
+          <router-link to="/theatres">Manage Theatres</router-link> |
+          <router-link to="/theatres/create">Create Theatres</router-link> |
+        </template>
         <!-- Additional links for authenticated users -->
         <button @click="logout">Logout</button>
       </template>

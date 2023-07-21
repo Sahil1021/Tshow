@@ -47,7 +47,7 @@ export default {
       }
 
       try {
-        await api.post("http://localhost:5000/api/signup", {
+        await api.post("/signup", {
           username: this.username,
           email: this.email,
           password: this.password,

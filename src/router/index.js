@@ -5,6 +5,8 @@ import Profile from "../views/Profile.vue";
 import Signup from "../views/Signup.vue";
 import UserHome from "../views/UserHome.vue";
 import AdminHome from "../views/AdminHome.vue";
+import TheatresList from "../views/TheatresList.vue";
+import CreateTheatre from "../views/CreateTheatre.vue";
 
 const routes = [
   { path: "/", name: "Home", component: Home },
@@ -15,13 +17,25 @@ const routes = [
     path: "/userhome",
     name: "UserHome",
     component: UserHome,
-    meta: { requiresAuth: true, role: "user" }, // Requires authentication and role=user
+    meta: { requiresAuth: true, role: "user" },
   },
   {
     path: "/adminhome",
     name: "AdminHome",
     component: AdminHome,
-    meta: { requiresAuth: true, role: "admin" }, // Requires authentication and role=admin
+    meta: { requiresAuth: true, role: "admin" },
+  },
+  {
+    path: "/theatres",
+    name: "TheatresList",
+    component: TheatresList,
+    meta: { requiresAuth: true, role: "admin" },
+  },
+  {
+    path: "/theatres/create",
+    name: "CreateTheatre",
+    component: CreateTheatre,
+    meta: { requiresAuth: true, role: "admin" },
   },
 ];
 

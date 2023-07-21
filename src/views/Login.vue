@@ -27,7 +27,7 @@ export default {
   methods: {
     async login() {
       try {
-        const response = await api.post("http://localhost:5000/api/login", {
+        const response = await api.post("/login", {
           username: this.username,
           password: this.password,
         });

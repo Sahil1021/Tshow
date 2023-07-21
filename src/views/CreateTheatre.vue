@@ -1,17 +1,17 @@
 <template>
   <div>
     <h1>Create a New Theatre</h1>
-    <form @submit.prevent="createTheatre">
+    <form class="container w-25" @submit.prevent="createTheatre">
       <label>Name:</label>
-      <input v-model="name" type="text" required />
+      <input class="form-control" v-model="name" type="text" required />
       <br />
       <label>Address:</label>
-      <input v-model="address" type="text" required />
+      <input class="form-control" v-model="address" type="text" required />
       <br />
       <label>Admin ID:</label>
-      <input v-model="admin_id" type="number" required />
+      <input class="form-control" v-model="admin_id" type="number" required />
       <br />
-      <button type="submit">Create Theatre</button>
+      <button class="btn btn-primary" type="submit">Create Theatre</button>
     </form>
   </div>
 </template>

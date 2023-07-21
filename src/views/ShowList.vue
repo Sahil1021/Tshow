@@ -1,13 +1,15 @@
 <template>
     <div>
-        <h1>Shows List</h1>
-        <ul>
+        <h1>Show List for {{ theatreName }}</h1>
+        <ul v-if="shows.length > 0">
             <li v-for="show in shows" :key="show.id">
-                {{ show.id }} - {{ show.name }} - {{ show.address }}
+                <strong>Show Name:</strong> {{ show.name }}
+                <br />
+                <strong>Show Time:</strong> {{ show.time }}
             </li>
-
         </ul>
-        <router-link to="/shows/create">Create New show</router-link>
+        <p v-else>No shows found for this theater.</p>
+        <p v-if="error">{{ error }}</p>
     </div>
 </template>
 
@@ -17,20 +19,23 @@ import api from "../api";
 export default {
     data() {
         return {
+            theatreName: this.$route.params.theatreName,
             shows: [],
+            error: "",
         };
     },
     async created() {
         try {
-            this.shows = await this.getShows(); // Call the getTheatres method
+            this.shows = await this.getShowsByTheatreName(this.theatreName);
         } catch (error) {
             console.error(error);
+            this.error = "An error occurred while fetching shows.";
         }
     },
     methods: {
-        async getShows() {
-            const response = await api.get("/shows");
-            return response.data; // Return the data from the response
+        async getShowsByTheatreName(theatreName) {
+            const response = await api.get(`/api/theatres/${theatreName}/shows`);
+            return response.data;
         },
     },
 };

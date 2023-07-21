@@ -3,7 +3,7 @@
         <h1>Create a New Show</h1>
         <form class="container w-25" @submit.prevent="createShow">
             <label>Theatre ID:</label>
-            <input class="form-control" v-model="theatre_id" type="number" required />
+            <input class="form-control" v-model="theatreId" type="number" required />
             <br />
             <label>Show Name:</label>
             <input class="form-control" v-model="showName" type="text" required />
@@ -22,7 +22,7 @@ import api from "../api";
 export default {
     data() {
         return {
-            theatre_id: "",
+            theatreId: "",
             showName: "",
             showTime: "",
             errorMessage: "",
@@ -32,18 +32,20 @@ export default {
         async createShow() {
             try {
                 const showData = {
-                    theatre_id: this.theatre_id,
+                    theatre_id: this.theatreId,
                     name: this.showName,
                     time: this.showTime,
-                    
                 };
-                await api.post("/shows", showData);
-                alert("Show created successfully!");
-                // Clear form inputs after creating a show
-                this.theatre_id = "";
-                this.showName = "";
-                this.showTime = "";
-                this.errorMessage = "";
+                const response = await api.post("/shows", showData);
+
+                if (response.status === 201) {
+                    alert("Show created successfully!");
+                    // Clear form inputs after creating a show
+                    this.theatreId = "";
+                    this.showName = "";
+                    this.showTime = "";
+                    this.errorMessage = ""; // Clear any previous error message
+                }
             } catch (error) {
                 if (error.response && error.response.status === 404) {
                     this.errorMessage = "Theater not found. Please provide a valid Theater ID.";

@@ -3,7 +3,11 @@
   <div>
     <h1>Theatres List</h1>
     <label>Enter Region:</label>
-    <input class="form-control w-25 container mb-3" v-model="searchAddress" type="text" />
+    <input
+      class="form-control w-25 container mb-3"
+      v-model="searchAddress"
+      type="text"
+    />
     <button class="btn btn-primary" @click="searchTheatres">Search</button>
     <ul v-if="showTheatres">
       <li v-for="theatre in filteredTheatres" :key="theatre.id">
@@ -38,7 +42,7 @@ export default {
       return response.data; // Return the data from the response
     },
     searchTheatres() {
-      this.filteredTheatres = this.theatres.filter(theatre =>
+      this.filteredTheatres = this.theatres.filter((theatre) =>
         theatre.address.toLowerCase().includes(this.searchAddress.toLowerCase())
       );
       this.showTheatres = true; // Show the filtered theaters after search
@@ -46,7 +50,6 @@ export default {
   },
 };
 </script>
-
 
 <!-- 
 <template>

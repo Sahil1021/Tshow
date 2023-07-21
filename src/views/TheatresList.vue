@@ -3,7 +3,7 @@
     <h1>Theatres List</h1>
     <ul>
       <li v-for="theatre in theatres" :key="theatre.id">
-        {{ theatre.name }} - {{ theatre.address }}
+        {{ theatre.id }} - {{ theatre.name }} - {{ theatre.address }}
       </li>
     </ul>
     <router-link to="/theatres/create">Create New Theatre</router-link>

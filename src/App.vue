@@ -21,6 +21,8 @@
           <router-link to="/shows">Manage Shows</router-link> |
           <router-link to="/shows/create">Create Show</router-link> |
           <router-link to="/theatres/create">Create Theatres</router-link> |
+          <!-- <router-link :to="`/theatres/edit`">Edit Theatre</router-link> -->
+
         </template>
 
         <button class="btn btn-danger" @click="logout">Logout</button>

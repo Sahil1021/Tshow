@@ -5,7 +5,7 @@
       <div class="col-12 col-sm-6 col-md-6 mb-4" v-for="theatre in theatres" :key="theatre.id">
         <div class="card">
           <div class="card-body">
-            <h5 class="card-title text-decoration-underline">Theatre {{ theatre.id }}</h5>
+            <h5 class="card-title text-decoration-underline">Theatre ID:  {{ theatre.id }}</h5>
             <p class="card-text">Theatre Name: {{ theatre.name }}</p>
             <p class="card-text">Theatre Address: {{ theatre.address }}</p>
             <p class="card-text">Capacity: {{ theatre.capacity }}</p>

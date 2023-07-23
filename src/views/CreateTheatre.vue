@@ -11,6 +11,9 @@
       <label>Admin ID:</label>
       <input class="form-control" v-model="admin_id" type="number" required />
       <br />
+      <label>Capacity:</label>
+      <input class="form-control" v-model="capacity" type="number" required />
+      <br />
       <button class="btn btn-primary" type="submit">Create Theatre</button>
     </form>
   </div>
@@ -24,6 +27,7 @@ export default {
       name: "",
       address: "",
       admin_id: "",
+      capacity: 0,
     };
   },
   methods: {
@@ -33,6 +37,7 @@ export default {
           name: this.name,
           address: this.address,
           admin_id: this.admin_id,
+          capacity: this.capacity,
         };
         await api.post("/theatres", theatreData);
         alert("Theatre created successfully!");
@@ -40,6 +45,10 @@ export default {
       } catch (error) {
         console.error(error);
       }
+    },
+    editTheatre(theatreId) {
+      // Navigate to the EditTheatre component with the theatre ID as a route parameter
+      this.$router.push({ name: "EditTheatre", params: { id: theatreId } });
     },
   },
 };

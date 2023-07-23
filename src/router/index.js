@@ -9,6 +9,7 @@ import TheatresList from "../views/TheatresList.vue";
 import CreateTheatre from "../views/CreateTheatre.vue";
 import CreateShow from "../views/CreateShow.vue";
 import ShowList from "../views/ShowList.vue";
+import EditTheatre from "../views/EditTheatre.vue";
 
 const routes = [
   { path: "/", name: "Home", component: Home },
@@ -51,6 +52,19 @@ const routes = [
     component: ShowList,
     meta: { requiresAuth: true, role: "admin" },
   },
+  {
+    path: "/theatres/edit/:id",
+    name: "EditTheatre",
+    component: EditTheatre,
+    // props: true,
+    meta: { requiresAuth: true, role: "admin" },
+  },
+  // {
+  //   path: "/theatres/:theatreName",
+  //   name: "ShowList",
+  //   component: ShowList,
+  //   props: true, // Enable passing route parameters as props
+  // },
 ];
 
 const router = createRouter({

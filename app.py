@@ -21,7 +21,22 @@ class User(db.Model):
     password = db.Column(db.String(120), nullable=False)
     role = db.Column(db.String(10), nullable=False)
 
+class Theatre(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(100), unique=True, nullable=False)
+    address = db.Column(db.String(200), nullable=False)
+    admin_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    admin = db.relationship('User', backref='theatres')
 
+    
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'name': self.name,
+            'address': self.address,
+            'admin_id': self.admin_id,
+            # Add any other fields you want to include in the dictionary
+        }
 # API Endpoints
 
 @app.route('/api/signup', methods=['POST'])
@@ -65,7 +80,32 @@ def login():
 def profile():
     current_user = get_jwt_identity()
     user = User.query.filter_by(username=current_user).first()
-    return jsonify({'username': user.username, 'role': user.role})
+    return jsonify({'username': user.username, 'role': user.role, 'email': user.email, 'id': user.id })
+
+@app.route('/api/theatres', methods=['POST'])
+def create_theatre():
+    data = request.get_json()
+    name = data.get('name')
+    address = data.get('address')
+    admin_id = data.get('admin_id')
+
+    # admin = User.query.get(admin_id)
+    # if not admin or admin.role != 'admin':
+    #     return jsonify({'message': 'Only admin can create theatres'}), 403
+    admin = User.query.filter_by(id=admin_id, role='admin').first()
+    if not admin:
+        return jsonify({'message': 'Invalid admin ID'}), 403
+
+    theatre = Theatre(name=name, address=address, admin_id=admin_id)
+    db.session.add(theatre)
+    db.session.commit()
+
+    return jsonify({'message': 'Theatre created successfully'}), 201
+
+@app.route('/api/theatres', methods=['GET'])
+def list_theatres():
+    theatres = Theatre.query.all()
+    return jsonify([theatre.to_dict() for theatre in theatres])
 
 
 if __name__ == '__main__':

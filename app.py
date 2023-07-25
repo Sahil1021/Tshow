@@ -75,6 +75,36 @@ def get_theaters_by_region():
     theater_data = [{"id": theater.id, "name": theater.name, "address": theater.address} for theater in theaters]
     return jsonify(theater_data)
  
+@app.route("/api/theatres/<int:theatreId>", methods=["PUT"])
+def update_theatre(theatreId):
+    data = request.get_json()
+    name = data.get('name')
+    address = data.get('address')
+    capacity = data.get('capacity')
+
+    theatre = Theatre.query.get(theatreId)
+    if not theatre:
+        return jsonify({"error": "Theatre not found."}), 404
+
+    theatre.name = name if name else theatre.name
+    theatre.address = address if address else theatre.address
+    theatre.capacity = capacity if capacity else theatre.capacity
+
+    db.session.commit()
+
+    return jsonify({"message": "Theatre updated successfully"}), 200
+
+
+@app.route('/api/theatres/<int:theatreId>', methods=['DELETE'])
+def delete_theatre(theatreId):
+    theatre = Theatre.query.get(theatreId)
+    if not theatre:
+        return jsonify({"error": "Theatre not found."}), 404
+
+    db.session.delete(theatre)
+    db.session.commit()
+
+    return jsonify({"message": "Theatre deleted successfully"}), 200
 
 @app.route('/api/signup', methods=['POST'])
 def signup():
@@ -154,10 +184,6 @@ def list_theatres():
     theatres = Theatre.query.all()
     return jsonify([theatre.to_dict() for theatre in theatres])
 
-# @app.route('/api/shows', methods=['GET'])
-# def list_shows():
-#     shows = Show.query.all()
-#     return jsonify([show.to_dict() for show in shows])
 @app.route('/api/shows', methods=['GET'])
 def list_shows():
     shows = Show.query.all()

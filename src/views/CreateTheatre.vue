@@ -43,12 +43,9 @@ export default {
         alert("Theatre created successfully!");
         this.$router.push("/theatres");
       } catch (error) {
+        alert("Invalid ID")
         console.error(error);
       }
-    },
-    editTheatre(theatreId) {
-      // Navigate to the EditTheatre component with the theatre ID as a route parameter
-      this.$router.push({ name: "EditTheatre", params: { id: theatreId } });
     },
   },
 };

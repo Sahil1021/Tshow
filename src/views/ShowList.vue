@@ -11,7 +11,7 @@
         @change="filterShows"
       />
     </div>
-    <div class="form-group">
+    <!-- <div class="form-group">
       <label for="theaterInput">Enter Theater Name:</label>
       <input
         type="text"
@@ -20,7 +20,7 @@
         v-model="theaterInput"
         @input="filterShows"
       />
-    </div>
+    </div> -->
     <div class="row mt-3" v-if="filteredShows.length > 0">
       <div
         class="col-12 col-sm-6 col-md-6 mb-4"
@@ -34,6 +34,8 @@
             </h5>
             <p class="card-text">Show Name: {{ show.name }}</p>
             <p class="card-text">Theater Name: {{ show.theatre_name }}</p>
+            <p class="card-text">Theater address: {{ show.theatre_address }}</p>
+            <p class="card-text">Date: {{ show.date }}</p>
             <p class="card-text">Show Time: {{ show.time }}</p>
           </div>
         </div>

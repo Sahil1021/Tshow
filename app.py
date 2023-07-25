@@ -13,7 +13,6 @@ db = SQLAlchemy(app)
 migrate = Migrate(app, db)
 jwt = JWTManager(app)
 CORS(app)
-# CORS(app, origins='http://localhost:8080')
 
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)

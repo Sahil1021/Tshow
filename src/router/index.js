@@ -53,18 +53,10 @@ const routes = [
     meta: { requiresAuth: true, role: "admin" },
   },
   {
-    path: "/theatres/edit/:id",
+    path: "/theatres/edit/:id", // Add dynamic segment for theatre ID
     name: "EditTheatre",
     component: EditTheatre,
-    // props: true,
-    meta: { requiresAuth: true, role: "admin" },
   },
-  // {
-  //   path: "/theatres/:theatreName",
-  //   name: "ShowList",
-  //   component: ShowList,
-  //   props: true, // Enable passing route parameters as props
-  // },
 ];
 
 const router = createRouter({

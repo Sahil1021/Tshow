@@ -1,28 +1,24 @@
 <template>
-    <p>Edit Theatre Page</p>
-</template>
-<!-- <template>
-    <div class="container w-50">
+    <div class="container">
         <h1 class="mb-3">Edit Theatre</h1>
         <form @submit.prevent="updateTheatre">
             <div class="form-group">
-                <label>Name:</label>
-                <input class="mb-3 form-control" v-model="editedTheatre.name" type="text" required/>
+                <label for="nameInput">Theatre Name:</label>
+                <input v-model="form.name" type="text" class="form-control" id="nameInput" required />
             </div>
             <div class="form-group">
-                <label>Address:</label>
-                <input class="mb-3 form-control" v-model="editedTheatre.address" type="text" required />
+                <label for="addressInput">Theatre Address:</label>
+                <input v-model="form.address" type="text" class="form-control" id="addressInput" required />
             </div>
             <div class="form-group">
-                <label>Capacity:</label>
-                <input class="mb-3 form-control mb-3" v-model="editedTheatre.capacity" type="number" required />
+                <label for="capacityInput">Capacity:</label>
+                <input v-model.number="form.capacity" type="number" class="form-control" id="capacityInput" required />
             </div>
-            <button class="btn btn-primary" type="submit">Update Theatre</button>
-            <router-link to="/theatres" class="btn btn-secondary ml-2">Cancel</router-link> 
-
+            <button type="submit" class="btn btn-primary">Update Theatre</button>
         </form>
     </div>
 </template>
+
 
 <script>
 import api from "../api";
@@ -30,7 +26,7 @@ import api from "../api";
 export default {
     data() {
         return {
-            editedTheatre: {
+            form: {
                 name: "",
                 address: "",
                 capacity: 0,
@@ -38,26 +34,32 @@ export default {
         };
     },
     async created() {
+        // Fetch the theatre data for editing and set it to the form
+        const theatreId = this.$route.params.id;
         try {
-            const theatreId = this.$route.params.id; // Get the theatre ID from the route parameter
             const response = await api.get(`/theatres/${theatreId}`);
-            this.editedTheatre = response.data; // Set the fetched theatre data to the editedTheatre object
+            this.form = response.data;
         } catch (error) {
-            console.error(error);
+            console.error("Error fetching theatre data for editing:", error);
         }
     },
-
     methods: {
         async updateTheatre() {
+            const theatreId = this.$route.params.id;
             try {
-                const theatreId = this.$route.params.id;
-                await api.put(`/theatres/edit/${theatreId}`, this.editedTheatre);
-                alert("Theatre updated successfully!");
-                this.$router.push("/theatres");
+                const response = await api.put(`/theatres/${theatreId}`, this.form);
+                console.log("Update Theatre Response:", response);
+
+                if (response.status === 200) {
+                    // Show success alert
+                    alert("Theatre updated successfully!");
+                    // Redirect back to the TheatreList page after updating
+                    this.$router.push({ name: "TheatresList" });
+                }
             } catch (error) {
-                console.error(error);
+                console.error("Error updating theatre:", error);
             }
         },
     },
 };
-</script> -->
+</script>

@@ -15,9 +15,9 @@
               <button @click="editTheatre(theatre.id)" class="btn btn-primary mr-2">
                 <i class="fa fa-edit"></i> Edit
               </button>
-              <!-- <button @click="showDeleteConfirmation(theatre.id)" class="btn btn-danger ml-2">
+              <button @click="showDeleteConfirmation(theatre.id)" class="btn btn-danger ml-2">
                 <i class="fa fa-trash"></i> Delete
-              </button> -->
+              </button>
             </div>
           </div>
         </div>
@@ -74,7 +74,28 @@ export default {
     cancelDeletion() {
       this.showConfirmationPrompt = false;
     },
-    
+    deleteTheatre() {
+      // Perform the deletion operation here using API call
+      // You can use Axios or Fetch API to send a DELETE request to your backend
+      api.delete(`/theatres/${this.selectedTheatreId}`) // Corrected the URL here
+        .then((response) => {
+          if (response.status === 200) {
+            // Deletion was successful, remove the theater from the list
+            this.theatres = this.theatres.filter(
+              (theatre) => theatre.id !== this.selectedTheatreId
+            );
+            console.log("Theatre deleted successfully");
+          } else {
+            console.error("Error deleting theatre:", response.data.error);
+          }
+        })
+        .catch((error) => {
+          console.error("Error deleting theatre:", error);
+        });
+
+      // Hide the confirmation prompt
+      this.showConfirmationPrompt = false;
+    },
   },
 };
 </script>

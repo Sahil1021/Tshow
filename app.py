@@ -3,6 +3,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_jwt_extended import JWTManager, create_access_token, jwt_required, get_jwt_identity
 from flask_cors import CORS
 from flask_migrate import Migrate
+from datetime import datetime
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///tshow.db'
@@ -42,6 +43,27 @@ class Show(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     theatre_id = db.Column(db.Integer, db.ForeignKey('theatre.id'), nullable=False)
     name = db.Column(db.String(100), nullable=False)
+    theatre = db.relationship("Theatre", backref="shows")
+    date = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+    time = db.Column(db.Time, nullable=False) 
+
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'name': self.name,
+            'date': self.date.strftime('%Y-%m-%d'), 
+            'time': self.time.strftime('%H:%M'),
+            'theatre_id': self.theatre_id,
+            'theatre_name': self.theatre.name if self.theatre else "",
+        }
+        
+
+        
+        
+class Show(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    theatre_id = db.Column(db.Integer, db.ForeignKey('theatre.id'), nullable=False)
+    name = db.Column(db.String(100), nullable=False)
     time = db.Column(db.String(100), nullable=False)
     theatre = db.relationship("Theatre", backref="shows")
     
@@ -62,6 +84,10 @@ def create_show():
     if not theatre:
         return jsonify({"error": "Theatre not found."}), 404
 
+    date = datetime.strptime(data["date"], '%Y-%m-%d')
+    time = datetime.strptime(data["time"], '%H:%M').time()
+
+    new_show = Show(theatre_id=theatre_id, name=data["name"], time=time, date=date)
     new_show = Show(theatre_id=theatre_id, name=data["name"], time=data["time"])
     db.session.add(new_show)
     db.session.commit()
@@ -183,9 +209,12 @@ def get_theatre_by_id(theatreId):
 def list_theatres():
     theatres = Theatre.query.all()
     return jsonify([theatre.to_dict() for theatre in theatres])
+    return jsonify([show.to_dict() for show in shows])
 
 @app.route('/api/shows', methods=['GET'])
 def list_shows():
+    current_date = datetime.utcnow().date()
+    shows = Show.query.filter(Show.date >= current_date).all()
     shows = Show.query.all()
     return jsonify([show.to_dict() for show in shows])
 

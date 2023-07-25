@@ -37,6 +37,7 @@ class Theatre(db.Model):
             'address': self.address,
             'admin_id': self.admin_id,
             'capacity': self.capacity,
+<<<<<<< HEAD
         }
         
 class Show(db.Model):
@@ -57,6 +58,25 @@ class Show(db.Model):
             'theatre_name': self.theatre.name if self.theatre else "",
         }
         
+
+        
+        
+class Show(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    theatre_id = db.Column(db.Integer, db.ForeignKey('theatre.id'), nullable=False)
+    name = db.Column(db.String(100), nullable=False)
+    time = db.Column(db.String(100), nullable=False)
+    theatre = db.relationship("Theatre", backref="shows")
+    
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'name': self.name,
+            'time': self.time,
+            'theatre_id': self.theatre_id,
+            'theatre_name': self.theatre.name if self.theatre else "",  # Include the theater name
+        }
+        
 @app.route("/api/shows", methods=["POST"])
 def create_show():
     data = request.json
@@ -65,10 +85,13 @@ def create_show():
     if not theatre:
         return jsonify({"error": "Theatre not found."}), 404
 
+<<<<<<< HEAD
     date = datetime.strptime(data["date"], '%Y-%m-%d')
     time = datetime.strptime(data["time"], '%H:%M').time()
 
     new_show = Show(theatre_id=theatre_id, name=data["name"], time=time, date=date)
+=======
+    new_show = Show(theatre_id=theatre_id, name=data["name"], time=data["time"])
     db.session.add(new_show)
     db.session.commit()
     return jsonify({"message": "Show created successfully!"}), 201
@@ -81,6 +104,39 @@ def get_theaters_by_region():
     theater_data = [{"id": theater.id, "name": theater.name, "address": theater.address} for theater in theaters]
     return jsonify(theater_data)
  
+<<<<<<< HEAD
+=======
+@app.route("/api/theatres/<int:theatreId>", methods=["PUT"])
+def update_theatre(theatreId):
+    data = request.get_json()
+    name = data.get('name')
+    address = data.get('address')
+    capacity = data.get('capacity')
+
+    theatre = Theatre.query.get(theatreId)
+    if not theatre:
+        return jsonify({"error": "Theatre not found."}), 404
+
+    theatre.name = name if name else theatre.name
+    theatre.address = address if address else theatre.address
+    theatre.capacity = capacity if capacity else theatre.capacity
+
+    db.session.commit()
+
+    return jsonify({"message": "Theatre updated successfully"}), 200
+
+
+@app.route('/api/theatres/<int:theatreId>', methods=['DELETE'])
+def delete_theatre(theatreId):
+    theatre = Theatre.query.get(theatreId)
+    if not theatre:
+        return jsonify({"error": "Theatre not found."}), 404
+
+    db.session.delete(theatre)
+    db.session.commit()
+
+    return jsonify({"message": "Theatre deleted successfully"}), 200
+>>>>>>> 4e5e92a85dcbcd32b950008084f4d4341483466d
 
 @app.route('/api/signup', methods=['POST'])
 def signup():
@@ -163,8 +219,12 @@ def list_theatres():
 
 @app.route('/api/shows', methods=['GET'])
 def list_shows():
+<<<<<<< HEAD
     current_date = datetime.utcnow().date()
     shows = Show.query.filter(Show.date >= current_date).all()
+=======
+    shows = Show.query.all()
+>>>>>>> 4e5e92a85dcbcd32b950008084f4d4341483466d
     return jsonify([show.to_dict() for show in shows])
 
 if __name__ == '__main__':

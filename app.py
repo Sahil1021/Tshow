@@ -3,6 +3,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_jwt_extended import JWTManager, create_access_token, jwt_required, get_jwt_identity
 from flask_cors import CORS
 from flask_migrate import Migrate
+from datetime import datetime
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///tshow.db'
@@ -23,21 +24,63 @@ class User(db.Model):
 
 class Theatre(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(100), unique=True, nullable=False)
+    name = db.Column(db.String(100), nullable=False)
     address = db.Column(db.String(200), nullable=False)
     admin_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     admin = db.relationship('User', backref='theatres')
-
-    
+    capacity = db.Column(db.Integer, nullable=False) 
+  
     def to_dict(self):
         return {
             'id': self.id,
             'name': self.name,
             'address': self.address,
             'admin_id': self.admin_id,
-            # Add any other fields you want to include in the dictionary
+            'capacity': self.capacity,
         }
-# API Endpoints
+        
+class Show(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    theatre_id = db.Column(db.Integer, db.ForeignKey('theatre.id'), nullable=False)
+    name = db.Column(db.String(100), nullable=False)
+    theatre = db.relationship("Theatre", backref="shows")
+    date = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+    time = db.Column(db.Time, nullable=False) 
+
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'name': self.name,
+            'date': self.date.strftime('%Y-%m-%d'), 
+            'time': self.time.strftime('%H:%M'),
+            'theatre_id': self.theatre_id,
+            'theatre_name': self.theatre.name if self.theatre else "",
+        }
+        
+@app.route("/api/shows", methods=["POST"])
+def create_show():
+    data = request.json
+    theatre_id = data["theatre_id"]
+    theatre = Theatre.query.get(theatre_id)
+    if not theatre:
+        return jsonify({"error": "Theatre not found."}), 404
+
+    date = datetime.strptime(data["date"], '%Y-%m-%d')
+    time = datetime.strptime(data["time"], '%H:%M').time()
+
+    new_show = Show(theatre_id=theatre_id, name=data["name"], time=time, date=date)
+    db.session.add(new_show)
+    db.session.commit()
+    return jsonify({"message": "Show created successfully!"}), 201
+
+    
+@app.route("/api/theaters", methods=["GET"])
+def get_theaters_by_region():
+    address = request.args.get("address")
+    theaters = Theatre.query.filter_by(address=address).all()
+    theater_data = [{"id": theater.id, "name": theater.name, "address": theater.address} for theater in theaters]
+    return jsonify(theater_data)
+ 
 
 @app.route('/api/signup', methods=['POST'])
 def signup():
@@ -88,6 +131,7 @@ def create_theatre():
     name = data.get('name')
     address = data.get('address')
     admin_id = data.get('admin_id')
+    capacity = data.get('capacity')
 
     # admin = User.query.get(admin_id)
     # if not admin or admin.role != 'admin':
@@ -96,17 +140,32 @@ def create_theatre():
     if not admin:
         return jsonify({'message': 'Invalid admin ID'}), 403
 
-    theatre = Theatre(name=name, address=address, admin_id=admin_id)
+    theatre = Theatre(name=name, address=address, admin_id=admin_id, capacity=capacity)
     db.session.add(theatre)
     db.session.commit()
 
     return jsonify({'message': 'Theatre created successfully'}), 201
 
+@app.route("/api/theatres/<int:theatreId>", methods=["GET"])
+def get_theatre_by_id(theatreId):
+    theatre = Theatre.query.get(theatreId)
+    if not theatre:
+        return jsonify({"error": "Theater not found."}), 404
+
+    return jsonify(theatre.to_dict()), 200
+
+
 @app.route('/api/theatres', methods=['GET'])
 def list_theatres():
     theatres = Theatre.query.all()
     return jsonify([theatre.to_dict() for theatre in theatres])
+    return jsonify([show.to_dict() for show in shows])
 
+@app.route('/api/shows', methods=['GET'])
+def list_shows():
+    current_date = datetime.utcnow().date()
+    shows = Show.query.filter(Show.date >= current_date).all()
+    return jsonify([show.to_dict() for show in shows])
 
 if __name__ == '__main__':
     with app.app_context():

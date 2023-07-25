@@ -5,43 +5,51 @@
       <div class="col-12 col-sm-6 col-md-6 mb-4" v-for="theatre in theatres" :key="theatre.id">
         <div class="card">
           <div class="card-body">
-            <h5 class="card-title text-decoration-underline">Theatre ID:  {{ theatre.id }}</h5>
+            <h5 class="card-title text-decoration-underline">
+              Theatre ID: {{ theatre.id }}
+            </h5>
             <p class="card-text">Theatre Name: {{ theatre.name }}</p>
             <p class="card-text">Theatre Address: {{ theatre.address }}</p>
             <p class="card-text">Capacity: {{ theatre.capacity }}</p>
             <div class="d-flex justify-content-center">
-              <button @click="editTheatre(theatre.id)" class="btnmargin btn btn-primary mr-5">
+              <button @click="editTheatre(theatre.id)" class="btn btn-primary mr-2">
                 <i class="fa fa-edit"></i> Edit
               </button>
-              <button @click="deleteTheatre(theatre.id)" class="btn btn-danger ml-2">
+              <!-- <button @click="showDeleteConfirmation(theatre.id)" class="btn btn-danger ml-2">
                 <i class="fa fa-trash"></i> Delete
-              </button>
+              </button> -->
             </div>
           </div>
         </div>
       </div>
     </div>
     <router-link to="/theatres/create" class="btn btn-primary mb-4">Create New Theatre</router-link>
+
+    <div v-if="showConfirmationPrompt" class="confirmation-prompt">
+      <div class="prompt-container bg-white p-4 rounded">
+        <p>Are you sure you want to delete this theatre?</p>
+        <div class="d-flex justify-content-end">
+          <button @click="deleteTheatre" class="btn btn-danger">Delete</button>
+          <button @click="cancelDeletion" class="btn btn-secondary ml-2">Cancel</button>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
-<style>
-.btnmargin {
-  margin-right: 5px;
-}
-</style>
 <script>
 import api from "../api";
-
 export default {
   data() {
     return {
       theatres: [],
+      selectedTheatreId: null,
+      showConfirmationPrompt: false,
     };
   },
   async created() {
     try {
-      this.theatres = await this.getTheatres(); // Call the getTheatres method
+      this.theatres = await this.getTheatres();
     } catch (error) {
       console.error(error);
     }
@@ -50,75 +58,38 @@ export default {
     async getTheatres() {
       try {
         const response = await api.get("/theatres");
-        return response.data; // Return the data from the response
+        return response.data;
       } catch (error) {
         console.error(error);
-        return []; // Return an empty array in case of an error
+        return [];
       }
     },
     editTheatre(theatreId) {
       this.$router.push({ name: "EditTheatre", params: { id: theatreId } });
-      // Handle the edit action, e.g., navigate to the edit page
-      console.log("Edit theatre with ID:", theatreId);
     },
-
-    async deleteTheatre(theatreId) {
-      try {
-        const response = await api.delete(`/theatres/${theatreId}`);
-        if (response.status === 204) {
-          this.theatres = this.theatres.filter((theatre) => theatre.id !== theatreId);
-          console.log("Theatre deleted successfully");
-        }
-      } catch (error) {
-        console.error("Error deleting theatre:", error);
-      }
+    showDeleteConfirmation(theatreId) {
+      this.selectedTheatreId = theatreId;
+      this.showConfirmationPrompt = true;
     },
-
+    cancelDeletion() {
+      this.showConfirmationPrompt = false;
+    },
+    
   },
 };
 </script>
 
-<!-- <template>
-  <div>
-    <h1>Theatres List</h1>
-    <ul>
-      <li v-for="theatre in theatres" :key="theatre.id">
-        {{ theatre.name }} - {{ theatre.address }}
-      </li>
-    </ul>
-    <router-link to="/theatres/create">Create New Theatre</router-link>
-  </div>
-</template>
-
-<script>
-import api from "../api";
-export default {
-  data() {
-    return {
-      theatres: [],
-    };
-  },
-  async created() {
-    try {
-      this.theatres = await this.getTheatres(); // Call the getTheatres method
-    } catch (error) {
-      console.error(error);
-    }
-  },
-  methods: {
-    async getTheatres() {
-      const response = await api.get("/theatres");
-      return response.data; // Return the data from the response
-    },
-  },
-
-  //   async created() {
-  //     this.theatres = await this.getTheatres();
-  //   },
-  //   methods: {
-  //     async getTheatres() {
-  //       return await api.get("/theatres");
-  //     },
-  //   },
-};
-</script> -->
+<style>
+.confirmation-prompt {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+</style>

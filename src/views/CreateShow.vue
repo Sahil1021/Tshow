@@ -8,12 +8,29 @@
       <label>Show Name:</label>
       <input class="form-control" v-model="showName" type="text" required />
       <br />
+      <label>Genre:</label>
+      <input class="form-control" v-model="showGenre" type="text" required />
+      <br />
       <label>Show Date:</label>
       <input class="form-control" v-model="showDate" type="date" required />
       <br />
       <label>Show Time:</label>
       <input class="form-control" v-model="showTime" type="time" required />
       <br />
+      <label>Ticket Price:</label>
+      <input
+        class="form-control"
+        v-model="ticketPrice"
+        type="number"
+        required
+      />
+      <br />
+      <label>Description:</label>
+      <textarea class="form-control" v-model="showDescription"></textarea>
+      <br />
+      <!-- <label>Image:</label>
+      <input type="file" @change="onFileChange" accept="image/*" />
+      <br /> -->
       <button class="btn btn-primary" type="submit">Create Show</button>
     </form>
     <p v-if="errorMessage">{{ errorMessage }}</p>
@@ -30,6 +47,10 @@ export default {
       showDate: "",
       showTime: "",
       errorMessage: "",
+      showDescription: "",
+      showGenre: "",
+      ticketPrice: "",
+      // showImage: null,
     };
   },
   methods: {
@@ -40,6 +61,11 @@ export default {
           name: this.showName,
           date: this.showDate,
           time: this.showTime,
+          description: this.showDescription,
+          genre: this.showGenre,
+          ticket_price: this.ticketPrice,
+
+          // showImage: this.showImage,
         };
         const response = await api.post("/shows", showData);
 
@@ -50,7 +76,11 @@ export default {
           this.showName = "";
           this.showDate = "";
           this.showTime = "";
-          this.errorMessage = ""; // Clear any previous error message
+          this.errorMessage = "";
+          this.showDescription = "";
+          this.showGenre = "";
+          this.ticketPrice = "";
+          // this.showImage = null; // Clear any previous error message
         }
       } catch (error) {
         if (error.response && error.response.status === 404) {
@@ -62,6 +92,9 @@ export default {
         console.error(error);
       }
     },
+    // onFileChange(event) {
+    //   this.showImage = event.target.files[0];
+    // },
   },
 };
 </script>

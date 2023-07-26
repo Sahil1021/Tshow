@@ -10,6 +10,7 @@ import CreateTheatre from "../views/CreateTheatre.vue";
 import CreateShow from "../views/CreateShow.vue";
 import ShowList from "../views/ShowList.vue";
 import EditTheatre from "../views/EditTheatre.vue";
+import EditShow from "../views/EditShow.vue";
 
 const routes = [
   { path: "/", name: "Home", component: Home },
@@ -56,6 +57,11 @@ const routes = [
     path: "/theatres/edit/:id", // Add dynamic segment for theatre ID
     name: "EditTheatre",
     component: EditTheatre,
+  },
+  {
+    path: "/shows/edit/:id", // Add dynamic segment for theatre ID
+    name: "EditShow",
+    component: EditShow,
   },
 ];
 

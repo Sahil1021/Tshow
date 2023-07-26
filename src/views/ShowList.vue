@@ -100,12 +100,10 @@ export default {
   },
   computed: {
     filteredShows() {
-      // Filter shows based on the selected date and theater name
       const selectedDate = new Date(this.selectedDate);
       const keyword = this.theaterInput.trim().toLowerCase();
 
       if (!selectedDate.getTime() && !keyword) {
-        // Display all shows if no date and theater name are selected
         return this.shows;
       }
 
@@ -113,7 +111,6 @@ export default {
         const showDate = new Date(show.date);
         const theaterName = show.theatre_name.toLowerCase();
 
-        // Use toDateString for date comparison
         const isDateMatch =
           !selectedDate.getTime() ||
           showDate.toDateString() === selectedDate.toDateString();
@@ -129,10 +126,10 @@ export default {
     async getShows() {
       try {
         const response = await api.get("/shows");
-        return response.data; // Return the shows data from the response
+        return response.data;
       } catch (error) {
         console.error(error);
-        return []; // Return an empty array in case of an error
+        return [];
       }
     },
 

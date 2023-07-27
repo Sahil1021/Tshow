@@ -11,6 +11,7 @@ import CreateShow from "../views/CreateShow.vue";
 import ShowList from "../views/ShowList.vue";
 import EditTheatre from "../views/EditTheatre.vue";
 import EditShow from "../views/EditShow.vue";
+import ShowBooking from "../views/ShowBooking.vue";
 
 const routes = [
   { path: "/", name: "Home", component: Home },
@@ -52,6 +53,11 @@ const routes = [
     name: "ShowList",
     component: ShowList,
     meta: { requiresAuth: true, role: "admin" },
+  },
+  {
+    path: "/shows/book",
+    name: "ShowBooking",
+    component: ShowBooking, // Add the new component to the router
   },
   {
     path: "/theatres/edit/:id", // Add dynamic segment for theatre ID

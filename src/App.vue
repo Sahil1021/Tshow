@@ -19,6 +19,7 @@
         <template v-if="userRole === 'user'">
           <router-link to="/userhome">User Home</router-link> |
           <router-link to="/shows/book">Book show</router-link> |
+          <router-link to="/shows/UserBookings">My Bookings</router-link> |
         </template>
         <template v-if="userRole === 'admin'">
           <router-link to="/adminhome">Admin Home</router-link> |

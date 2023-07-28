@@ -44,11 +44,11 @@ export default {
     return {
       theatreId: "",
       showName: "",
+      showGenre: "",
       showDate: "",
       showTime: "",
       errorMessage: "",
       showDescription: "",
-      showGenre: "",
       ticketPrice: "",
       // showImage: null,
     };

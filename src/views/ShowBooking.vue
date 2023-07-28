@@ -18,6 +18,9 @@
           <button @click="bookShow(show.id)" class="btn btn-success">
             Book Tickets
           </button>
+          <p v-if="!houseful && availableSeats !== null">Available Seats: {{ availableSeatsText }}</p>
+          <p v-else-if="houseful">Houseful</p>
+          <p v-else>Loading...</p>
         </div>
       </div>
     </div>
@@ -36,17 +39,17 @@
             </button>
           </div>
           <div class="modal-body">
-            <p v-if="availableSeats.length > 0">
-              Available Seats: {{ availableSeats.join(", ") }}
-            </p>
-            <p v-else>No seats available for this show.</p>
+            <p v-if="isLoadingSeats">Loading...</p>
+            <template v-else-if="availableSeats !== null">
+              <p v-if="availableSeats.length > 0">
+                Available Seats: {{ availableSeats.join(", ") }}
+              </p>
+              <p v-else>No seats available for this show.</p>
+            </template>
+            <p v-else>No seats information available.</p>
           </div>
           <div class="modal-footer">
-            <button
-              type="button"
-              class="btn btn-secondary"
-              @click="closeSeatsModal"
-            >
+            <button type="button" class="btn btn-secondary" @click="closeSeatsModal">
               Close
             </button>
           </div>
@@ -65,7 +68,9 @@ export default {
       shows: [],
       selectedShow: null,
       availableSeats: [],
+      houseful: false,
       showSeatsModal: false,
+      isLoadingSeats: false,
     };
   },
   async created() {
@@ -75,73 +80,121 @@ export default {
       console.error(error);
     }
   },
+  computed: {
+    availableSeatsText() {
+      if (this.availableSeats !== null && Array.isArray(this.availableSeats)) {
+        return this.availableSeats.join(", ");
+      }
+      return "";
+    },
+  },
   methods: {
     async getAvailableShows() {
       try {
         const response = await api.get("/shows");
-        return response.data; // Return the shows data from the response
+        return response.data;
       } catch (error) {
         console.error(error);
-        return []; // Return an empty array in case of an error
+        return [];
       }
     },
     async getAvailableSeats(showId) {
       try {
         const response = await api.get(`/shows/${showId}/seats`);
-        return response.data; // Return the available seats data from the response
+        return response.data.available_seats;
       } catch (error) {
         console.error(error);
-        return []; // Return an empty array in case of an error
+        return null;
       }
     },
-    viewAvailableSeats(showId) {
+
+    async viewAvailableSeats(showId) {
       this.selectedShow = this.shows.find((show) => show.id === showId);
-      this.availableSeats = this.getAvailableSeats(showId);
-      this.showSeatsModal = true;
+
+      this.isLoadingSeats = true;
+      try {
+        const availableSeats = await this.getAvailableSeats(showId);
+        this.availableSeats = availableSeats;
+        this.houseful = availableSeats.length === 0;
+      } catch (error) {
+        console.error(error);
+        this.availableSeats = null;
+        this.houseful = false;
+      } finally {
+        this.isLoadingSeats = false;
+        this.showSeatsModal = true;
+      }
+      
     },
+
     closeSeatsModal() {
       this.showSeatsModal = false;
     },
+
     async bookShow(showId) {
       try {
         console.log("Booking show with ID:", showId);
         const numTickets = prompt("Enter the number of tickets to book:");
-        if (numTickets === null || isNaN(numTickets)) {
+        if (numTickets === null || isNaN(numTickets) || parseInt(numTickets) <= 0) {
           return;
         }
 
-        const response = await api.post(`/shows/${showId}/book`, {
-          numTickets: parseInt(numTickets),
-        });
-        if (response.status === 200) {
-          // Booking was successful
-          await this.updateAvailableSeats(showId);
-          this.shows = await this.getAvailableShows();
-          alert("Show booked successfully.");
-        } else {
-          // Booking failed
-          alert("Failed to book the show.");
+        // Get the JWT token from Local Storage
+        const token = localStorage.getItem("access_token");
+
+        // Check if the token is available
+        if (!token) {
+          console.error("JWT token not available");
+          return;
         }
+
+        // Include the JWT token in the request headers
+        const headers = {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        };
+
+        // Make the POST request to book the show with the JWT token in the header
+        const response = await api.post(`/shows/${showId}/book`, { numTickets: parseInt(numTickets) }, { headers });
+
+        console.log(response.data);
+
+        // Update the available seats after booking
+        const updatedShow = this.shows.find((show) => show.id === showId);
+        if (updatedShow) {
+          updatedShow.available_seats -= parseInt(numTickets);
+          this.availableSeats = updatedShow.available_seats; // Update the available seats for the selected show
+          this.houseful = updatedShow.available_seats === 0; // Update houseful flag
+        }
+
+        // this.availableSeatsText = this.availableSeats.join(", ");
+
+        // Refresh the available seats after booking
+        this.refreshAvailableSeats(showId);
+        alert("Booking is Successful!!");
+
       } catch (error) {
         console.error(error);
-        alert("Failed to book the show.");
       }
     },
-    async updateAvailableSeats(showId) {
-      // You can implement your update logic here, for example, by making an API request to update the available seats after booking.
+
+    async refreshAvailableSeats(showId) {
       try {
+        // Fetch the updated available seats for the show
         const response = await api.get(`/shows/${showId}/seats`);
-        if (response.status === 200) {
-          // Update available seats in the component state
-          this.availableSeats = response.data;
-        } else {
-          console.log("Failed to fetch available seats.");
-        }
+        const updatedAvailableSeats = response.data.available_seats;
+
+        // Update the availableSeats data
+        this.availableSeats = updatedAvailableSeats;
+
+        // Update the houseful flag
+        this.houseful = updatedAvailableSeats.length === 0;
       } catch (error) {
         console.error(error);
-        alert("Failed to fetch available seats.");
+        this.availableSeats = null;
       }
     },
+
   },
 };
 </script>

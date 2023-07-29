@@ -2,60 +2,34 @@
   <div>
     <h1>Theatres List</h1>
     <label>Enter Region:</label>
-    <input
-      class="form-control w-25 container mb-3"
-      v-model="searchAddress"
-      type="text"
-    />
-    <button class="btn btn-primary mb-4" @click="searchTheatres">
-      Search Theatres
-    </button>
+    <input class="form-control w-25 container mb-3" v-model="searchAddress" type="text" />
+    <button class="btn btn-primary mb-4" @click="searchTheatres">Search Theatres</button>
     <!-- Display the validation message if showTheatres is true and filteredTheatres is empty -->
     <!-- <p v-if="showTheatres && searchAddress.length === 0" class="text-danger">Please enter something to search.</p> -->
     <ul v-if="showTheatres && filteredTheatres.length > 0">
-      <div
-        class="card w-25 container"
-        v-for="theatre in filteredTheatres"
-        :key="theatre.id"
-      >
+      <div class="card w-25 container" v-for="theatre in filteredTheatres" :key="theatre.id">
         <div class="card-body">
           <h5 class="card-title">{{ theatre.name }}</h5>
           <p class="card-text">{{ theatre.address }}</p>
+          <!-- Add the button to view shows for the theater -->
+          <router-link :to="{ name: 'TheatreShows', params: { id: theatre.id } }" class="btn btn-primary">
+            View Shows
+          </router-link>
         </div>
       </div>
     </ul>
     <p v-else-if="showTheatres">No theatres found.</p>
-
     <h1>Shows List</h1>
     <label>Enter Show Name:</label>
-    <input
-      class="form-control w-25 container mb-3"
-      v-model="searchShowName"
-      type="text"
-    />
+    <input class="form-control w-25 container mb-3" v-model="searchShowName" type="text" />
     <label>Enter Genre:</label>
-    <input
-      class="form-control w-25 container mb-3"
-      v-model="searchGenre"
-      type="text"
-    />
-    <button class="btn btn-primary mb-4" @click="searchShows">
-      Search Shows
-    </button>
+    <input class="form-control w-25 container mb-3" v-model="searchGenre" type="text" />
+    <button class="btn btn-primary mb-4" @click="searchShows">Search Shows</button>
     <!-- Display the validation message if showShows is true and filteredShows is empty -->
     <!-- <p v-if="showShows && searchShowName.length === 0" class="text-danger">Please enter something to search.</p> -->
     <ul v-if="showShows && filteredShows.length > 0">
-      <li
-        class="card w-25 container mx-auto"
-        v-for="show in filteredShows"
-        :key="show.id"
-      >
-        <div class="card-body">
-          <h5 class="card-title">{{ show.name }}</h5>
-          <p class="card-text">{{ show.theatre_name }}</p>
-          <p class="card-text">{{ show.date }}</p>
-          <p class="card-text">{{ show.time }}</p>
-        </div>
+      <li v-for="show in filteredShows" :key="show.id">
+        {{ show.name }} - {{ show.theatre_name }} - {{ show.date }} - {{ show.time }}
       </li>
     </ul>
     <p v-else-if="showShows">No shows found.</p>
@@ -116,9 +90,7 @@ export default {
       } else {
         this.filteredShows = this.shows.filter(
           (show) =>
-            show.name
-              .toLowerCase()
-              .includes(this.searchShowName.toLowerCase()) &&
+            show.name.toLowerCase().includes(this.searchShowName.toLowerCase()) &&
             show.genre.toLowerCase().includes(this.searchGenre.toLowerCase())
         );
         this.showShows = true;

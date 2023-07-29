@@ -38,10 +38,12 @@
     </div>
     <p v-else>No shows available for booking.</p>
   </div>
+
 </template>
 
 <script>
 import api from "../api";
+import { sortBy } from 'lodash';
 
 export default {
   data() {
@@ -54,10 +56,17 @@ export default {
       const allShows = await this.getAvailableShows();
       const currentDateTime = new Date();
 
+      // Sort shows in descending order based on their creation date (assuming there is a `created_at` property)
+      this.shows = sortBy(allShows, (show) => new Date(show.created_at)).reverse();
+
       // Filter shows to keep only those with date and time greater than current date and time
-      this.shows = allShows.filter((show) => {
+      this.shows = this.shows.filter((show) => {
         const showDateTime = new Date(`${show.date}T${show.time}`);
-        return showDateTime > currentDateTime;
+        const isDateInPast = showDateTime < currentDateTime;
+        const isTodayShow = show.date === currentDateTime.toISOString().split("T")[0];
+
+        // Return shows that have a future date or shows with today's date but show time is not yet passed
+        return !isDateInPast || (isTodayShow && showDateTime > currentDateTime);
       });
     } catch (error) {
       console.error(error);

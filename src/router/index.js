@@ -13,6 +13,7 @@ import EditTheatre from "../views/EditTheatre.vue";
 import EditShow from "../views/EditShow.vue";
 import ShowBooking from "../views/ShowBooking.vue";
 import UserBookings from "../views/UserBookings.vue";
+import TheatreShows from "../views/TheatreShows.vue"; // Import the component for displaying shows under a theater
 
 const routes = [
   { path: "/", name: "Home", component: Home },
@@ -74,6 +75,11 @@ const routes = [
     path: "/shows/UserBookings",
     name: "UserBookings",
     component: UserBookings,
+  },
+  {
+    path: "/theatres/:id/shows", // Dynamic parameter to capture the theater ID
+    name: "TheatreShows", // Route name
+    component: TheatreShows, // Component for displaying shows under a theater
   },
 ];
 

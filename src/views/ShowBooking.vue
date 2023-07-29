@@ -12,50 +12,31 @@
           <p class="card-text">Show Time: {{ show.time }}</p>
           <p class="card-text">Ticket Price: {{ show.ticket_price }}</p>
           <p class="card-text">Description: {{ show.description }}</p>
-          <button @click="viewAvailableSeats(show.id)" class="btn btn-primary">
-            View Available Seats
-          </button>
-          <button @click="bookShow(show.id)" class="btn btn-success">
+
+          <p class="btn btn-warning" v-if="show.available_seats === 0">
+            Houseful
+          </p>
+          <p v-else-if="show.available_seats !== null">
+            Available Seats: {{ show.available_seats }}
+          </p>
+          <p v-else>Loading...</p>
+          <br />
+          <!-- Display loading message while fetching available seats -->
+
+          <!-- <button @click="bookShow(show.id)" class="btn btn-success">
+            Book Tickets
+          </button> -->
+          <button
+            @click="bookShow(show.id)"
+            class="btn btn-success"
+            :disabled="show.available_seats === 0"
+          >
             Book Tickets
           </button>
-          <p v-if="!houseful && availableSeats !== null">Available Seats: {{ availableSeatsText }}</p>
-          <p v-else-if="houseful">Houseful</p>
-          <p v-else>Loading...</p>
         </div>
       </div>
     </div>
     <p v-else>No shows available for booking.</p>
-
-    <!-- Available Seats Modal -->
-    <div v-if="showSeatsModal" class="modal" tabindex="-1" role="dialog">
-      <div class="modal-dialog" role="document">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title">
-              Available Seats for {{ selectedShow.name }}
-            </h5>
-            <button type="button" class="close" @click="closeSeatsModal">
-              <span aria-hidden="true">&times;</span>
-            </button>
-          </div>
-          <div class="modal-body">
-            <p v-if="isLoadingSeats">Loading...</p>
-            <template v-else-if="availableSeats !== null">
-              <p v-if="availableSeats.length > 0">
-                Available Seats: {{ availableSeats.join(", ") }}
-              </p>
-              <p v-else>No seats available for this show.</p>
-            </template>
-            <p v-else>No seats information available.</p>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" @click="closeSeatsModal">
-              Close
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
   </div>
 </template>
 
@@ -66,11 +47,6 @@ export default {
   data() {
     return {
       shows: [],
-      selectedShow: null,
-      availableSeats: [],
-      houseful: false,
-      showSeatsModal: false,
-      isLoadingSeats: false,
     };
   },
   async created() {
@@ -88,15 +64,6 @@ export default {
     }
   },
 
-
-  computed: {
-    availableSeatsText() {
-      if (this.availableSeats !== null && Array.isArray(this.availableSeats)) {
-        return this.availableSeats.join(", ");
-      }
-      return "";
-    },
-  },
   methods: {
     async getAvailableShows() {
       try {
@@ -107,44 +74,16 @@ export default {
         return [];
       }
     },
-    async getAvailableSeats(showId) {
-      try {
-        const response = await api.get(`/shows/${showId}/seats`);
-        return response.data.available_seats;
-      } catch (error) {
-        console.error(error);
-        return null;
-      }
-    },
-
-    async viewAvailableSeats(showId) {
-      this.selectedShow = this.shows.find((show) => show.id === showId);
-
-      this.isLoadingSeats = true;
-      try {
-        const availableSeats = await this.getAvailableSeats(showId);
-        this.availableSeats = availableSeats;
-        this.houseful = availableSeats.length === 0;
-      } catch (error) {
-        console.error(error);
-        this.availableSeats = null;
-        this.houseful = false;
-      } finally {
-        this.isLoadingSeats = false;
-        this.showSeatsModal = true;
-      }
-      
-    },
-
-    closeSeatsModal() {
-      this.showSeatsModal = false;
-    },
 
     async bookShow(showId) {
       try {
         console.log("Booking show with ID:", showId);
         const numTickets = prompt("Enter the number of tickets to book:");
-        if (numTickets === null || isNaN(numTickets) || parseInt(numTickets) <= 0) {
+        if (
+          numTickets === null ||
+          isNaN(numTickets) ||
+          parseInt(numTickets) <= 0
+        ) {
           return;
         }
 
@@ -164,46 +103,25 @@ export default {
         };
 
         // Make the POST request to book the show with the JWT token in the header
-        const response = await api.post(`/shows/${showId}/book`, { numTickets: parseInt(numTickets) }, { headers });
+        const response = await api.post(
+          `/shows/${showId}/book`,
+          { numTickets: parseInt(numTickets) },
+          { headers }
+        );
 
         console.log(response.data);
 
-        // Update the available seats after booking
+        // Update the available seats for the selected show
         const updatedShow = this.shows.find((show) => show.id === showId);
         if (updatedShow) {
           updatedShow.available_seats -= parseInt(numTickets);
-          this.availableSeats = updatedShow.available_seats; // Update the available seats for the selected show
-          this.houseful = updatedShow.available_seats === 0; // Update houseful flag
         }
 
-        // this.availableSeatsText = this.availableSeats.join(", ");
-
-        // Refresh the available seats after booking
-        this.refreshAvailableSeats(showId);
         alert("Booking is Successful!!");
-
       } catch (error) {
         console.error(error);
       }
     },
-
-    async refreshAvailableSeats(showId) {
-      try {
-        // Fetch the updated available seats for the show
-        const response = await api.get(`/shows/${showId}/seats`);
-        const updatedAvailableSeats = response.data.available_seats;
-
-        // Update the availableSeats data
-        this.availableSeats = updatedAvailableSeats;
-
-        // Update the houseful flag
-        this.houseful = updatedAvailableSeats.length === 0;
-      } catch (error) {
-        console.error(error);
-        this.availableSeats = null;
-      }
-    },
-
   },
 };
 </script>

@@ -75,11 +75,20 @@ export default {
   },
   async created() {
     try {
-      this.shows = await this.getAvailableShows();
+      const allShows = await this.getAvailableShows();
+      const currentDateTime = new Date();
+
+      // Filter shows to keep only those with date and time greater than current date and time
+      this.shows = allShows.filter((show) => {
+        const showDateTime = new Date(`${show.date}T${show.time}`);
+        return showDateTime > currentDateTime;
+      });
     } catch (error) {
       console.error(error);
     }
   },
+
+
   computed: {
     availableSeatsText() {
       if (this.availableSeats !== null && Array.isArray(this.availableSeats)) {

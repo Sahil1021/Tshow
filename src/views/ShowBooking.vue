@@ -1,7 +1,7 @@
 <template>
   <div class="container">
-    <h1>Book Shows</h1>
-    <div v-if="shows.length > 0">
+    <h1 class="mt-5">Book Shows</h1>
+    <div class="w-50" v-if="shows.length > 0">
       <div class="card mb-3" v-for="show in shows" :key="show.id">
         <div class="card-body">
           <h5 class="card-title">{{ show.name }}</h5>

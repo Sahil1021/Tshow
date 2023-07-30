@@ -1,16 +1,37 @@
 <template>
-  <div>
-    <h1 class="mb-3">Login</h1>
-    <form class="container w-25" @submit.prevent="login">
-      <label>Username:</label>
-      <input class="form-control" v-model="username" type="text" required />
-      <br />
-      <label>Password:</label>
-      <input class="form-control" v-model="password" type="password" required />
-      <br />
-      <button class="btn btn-primary mb-3" type="submit">Login</button>
-    </form>
-    Don't have an account? <router-link to="/signup">Signup here</router-link>
+  <div class="container">
+    <div class="row">
+      <div class="col-md-12">
+        <!-- Add a wrapper div and apply padding to it for more margin -->
+        <div class="form-container">
+          <div class="row align-items-center">
+            <!-- Left Column with Image -->
+            <div class="col-md-6">
+              <img src="../assets/login.svg" 
+              alt="Login Image"
+              class="img-fluid rounded"
+              />
+            </div>
+
+            <!-- Right Column with Form -->
+            <div class="col-md-6 ri">
+              <h1 class="mb-3">Login</h1>
+              <form @submit.prevent="login">
+                <label>Username:</label>
+                <input class="form-control mb-3" v-model="username" type="text" required />
+
+                <label>Password:</label>
+                <input class="form-control mb-3" v-model="password" type="password" required />
+
+                <button class="btn btn-primary" type="submit">Login</button>
+              </form>
+
+              <p>Don't have an account? <router-link to="/signup">Signup here</router-link></p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -44,3 +65,11 @@ export default {
   },
 };
 </script>
+
+<style>
+/* Custom styles can be added here if needed */
+.ri{
+      width: 35% !important;
+}
+
+</style>

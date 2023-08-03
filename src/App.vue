@@ -10,49 +10,52 @@
         </button>
         <div class="collapse navbar-collapse justify-content-center" id="navbarNav">
           <ul class="navbar-nav">
-        <router-link class="navbar-brand" to="/">Home</router-link>
+            <router-link class="navbar-brand" to="/">Home</router-link>
 
-             <template v-if="!isAuthenticated">
-                <!-- Show these links only if the user is not authenticated -->
+            <template v-if="!isAuthenticated">
+              <!-- Show these links only if the user is not authenticated -->
+              <li class="nav-item">
+                <router-link class="nav-link" to="/signup">Signup</router-link>
+              </li>
+              <li class="nav-item">
+                <router-link class="nav-link" to="/login">Login</router-link>
+              </li>
+            </template>
+            <template v-if="isAuthenticated">
+              <!-- Show these links only if the user is authenticated -->
+              <template v-if="userRole === 'user'">
                 <li class="nav-item">
-                  <router-link class="nav-link" to="/signup">Signup</router-link>
+                  <router-link class="nav-link" to="/userhome">User Home</router-link>
                 </li>
                 <li class="nav-item">
-                  <router-link class="nav-link" to="/login">Login</router-link>
+                  <router-link class="nav-link" to="/shows/book">Book show</router-link>
+                </li>
+                <li class="nav-item">
+                  <router-link class="nav-link" to="/shows/UserBookings">My Bookings</router-link>
                 </li>
               </template>
-              <template v-if="isAuthenticated">
-                <!-- Show these links only if the user is authenticated -->
-                <template v-if="userRole === 'user'">
-                  <li class="nav-item">
-                    <router-link class="nav-link" to="/userhome">User Home</router-link>
-                  </li>
-                  <li class="nav-item">
-                    <router-link class="nav-link" to="/shows/book">Book show</router-link>
-                  </li>
-                  <li class="nav-item">
-                    <router-link class="nav-link" to="/shows/UserBookings">My Bookings</router-link>
-                  </li>
-                </template>
 
-                <template v-if="userRole === 'admin'">
-                  <li class="nav-item">
-                    <router-link class="nav-link" to="/adminhome">Admin Home</router-link>
-                  </li>
-                  <li class="nav-item">
-                    <router-link class="nav-link" to="/theatres">Manage Theatres</router-link>
-                  </li>
-                  <li class="nav-item">
-                    <router-link class="nav-link" to="/shows">Manage Shows</router-link>
-                  </li>
-                  <li class="nav-item">
-                    <router-link class="nav-link" to="/shows/create">Create Show</router-link>
-                  </li>
-                  <li class="nav-item">
-                    <router-link class="nav-link" to="/theatres/create">Create Theatres</router-link>
-                  </li>
-                </template>
+              <template v-if="userRole === 'admin'">
+                <li class="nav-item">
+                  <router-link class="nav-link" to="/adminhome">Admin Home</router-link>
+                </li>
+                <li class="nav-item">
+                  <router-link class="nav-link" to="/theatres">Manage Theatres</router-link>
+                </li>
+                <li class="nav-item">
+                  <router-link class="nav-link" to="/shows">Manage Shows</router-link>
+                </li>
+                <li class="nav-item">
+                  <router-link class="nav-link" to="/shows/create">Create Show</router-link>
+                </li>
+                <li class="nav-item">
+                  <router-link class="nav-link" to="/theatres/create">Create Theatres</router-link>
+                </li>
+                <li class="nav-item">
+                  <router-link class="nav-link" to="/dashboard">CSVs</router-link>
+                </li>
               </template>
+            </template>
           </ul>
         </div>
         <div class="ms-auto">
@@ -117,3 +120,7 @@ nav a.router-link-exact-active {
   color: #42b983;
 }
 </style>
+
+
+<!-- cd /mnt/c/Users/MYPC/Desktop/vue5_merge-cloned -->
+<!-- -->

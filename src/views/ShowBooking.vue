@@ -26,19 +26,19 @@
           <!-- <button @click="bookShow(show.id)" class="btn btn-success">
             Book Tickets
           </button> -->
-          <button
-            @click="bookShow(show.id)"
-            class="btn btn-success"
-            :disabled="show.available_seats === 0"
-          >
+          <button @click="bookShow(show.id)" class="btn btn-success" :disabled="show.available_seats === 0">
             Book Tickets
           </button>
+          <!-- Inside the loop that displays shows -->
+          <!-- <p>Average Rating: {{ show.average_rating.toFixed(2) }}</p>
+          <p>Number of Ratings: {{ show.num_ratings }}</p>
+          <button @click="rateShow(show.id)" class="btn btn-primary">Rate Show</button> -->
+
         </div>
       </div>
     </div>
     <p v-else>No shows available for booking.</p>
   </div>
-
 </template>
 
 <script>
@@ -127,6 +127,44 @@ export default {
         }
 
         alert("Booking is Successful!!");
+      } catch (error) {
+        console.error(error);
+      }
+    },
+    async rateShow(showId) {
+      try {
+        const rating = parseFloat(prompt("Enter your rating (0-5):"));
+        if (isNaN(rating) || rating < 0 || rating > 5) {
+          alert("Invalid rating. Please provide a rating between 0 and 5.");
+          return;
+        }
+
+        const token = localStorage.getItem("access_token");
+        if (!token) {
+          console.error("JWT token not available");
+          return;
+        }
+
+        const headers = {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        };
+
+        const response = await api.post(
+          `/shows/${showId}/rate`,
+          { rating },
+          { headers }
+        );
+
+        console.log(response.data);
+        alert("Show rated successfully!");
+
+        // Update the average rating and number of ratings on the frontend
+        const ratedShow = this.shows.find((show) => show.id === showId);
+        if (ratedShow) {
+          ratedShow.average_rating = response.data.average_rating;
+          ratedShow.num_ratings = response.data.num_ratings;
+        }
       } catch (error) {
         console.error(error);
       }

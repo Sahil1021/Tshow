@@ -22,11 +22,11 @@
                             Book Ticket
 
                         </button> -->
-                        <div v-if="!showBookingClosed(show.date, show.time)" class="d-flex justify-content-center">
-                        <router-link :to="{ name: 'ShowBooking' }" class="btn btn-success ml-2">
-                         <i class="fa fa-trash"></i>Book shows here
-                         </router-link>
-                        </div>
+                        <!-- <div v-if="!showBookingClosed(show.date, show.time)" class="d-flex justify-content-center">
+                            <router-link :to="{ name: 'ShowBooking' }" class="btn btn-success ml-2">
+                                <i class="fa fa-trash"></i>Book shows here
+                            </router-link>
+                        </div> -->
 
                     </div>
                 </div>

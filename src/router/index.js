@@ -88,6 +88,8 @@ const routes = [
     name: "dashboard", // Route name
     component: dashboard, // Component for displaying shows under a theater
   },
+
+  
 ];
 
 const router = createRouter({

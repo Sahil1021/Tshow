@@ -12,7 +12,6 @@
           <p class="card-text">Show Time: {{ show.time }}</p>
           <p class="card-text">Ticket Price: {{ show.ticket_price }}</p>
           <p class="card-text">Description: {{ show.description }}</p>
-
           <p class="btn btn-warning" v-if="show.available_seats === 0">
             Houseful
           </p>
@@ -21,18 +20,18 @@
           </p>
           <p v-else>Loading...</p>
           <br />
-          <!-- Display loading message while fetching available seats -->
 
-          <!-- <button @click="bookShow(show.id)" class="btn btn-success">
-            Book Tickets
-          </button> -->
+          <p>Average Rating: {{ show.average_rating.toFixed(2) }}</p>
+          <p>Number of Ratings: {{ show.num_ratings }}</p>
+          <!-- <button @click="rateShow(show.id, show)" class="btn btn-primary">Rate Show</button> -->
+          <button @click="rateShow(show.id, show)" class="btn btn-primary"
+            :disabled="ratedByUser || ratedShows.includes(show.id)">
+            {{ show.ratedByUser ? 'Rated' : 'Rate Show' }}
+          </button>
+
           <button @click="bookShow(show.id)" class="btn btn-success" :disabled="show.available_seats === 0">
             Book Tickets
           </button>
-          <!-- Inside the loop that displays shows -->
-          <!-- <p>Average Rating: {{ show.average_rating.toFixed(2) }}</p>
-          <p>Number of Ratings: {{ show.num_ratings }}</p>
-          <button @click="rateShow(show.id)" class="btn btn-primary">Rate Show</button> -->
 
         </div>
       </div>
@@ -42,17 +41,23 @@
 </template>
 
 <script>
+
 import api from "../api";
 import { sortBy } from 'lodash';
 
 export default {
+
   data() {
     return {
       shows: [],
+      ratedShows: [],
+
     };
   },
+
   async created() {
     try {
+      this.ratedShows = await this.getUserRatedShows();
       const allShows = await this.getAvailableShows();
       const currentDateTime = new Date();
 
@@ -68,12 +73,38 @@ export default {
         // Return shows that have a future date or shows with today's date but show time is not yet passed
         return !isDateInPast || (isTodayShow && showDateTime > currentDateTime);
       });
+      this.shows.forEach((show) => {
+        show.average_rating = show.average_rating || 0;
+        show.num_ratings = show.num_ratings || 0;
+        show.ratedByUser = false; // Initialize the ratedByUser property
+      });
     } catch (error) {
       console.error(error);
     }
+
   },
 
   methods: {
+    async getUserRatedShows() {
+      try {
+        const token = localStorage.getItem("access_token");
+        if (!token) {
+          console.error("JWT token not available");
+          return [];
+        }
+
+        const headers = {
+          Authorization: `Bearer ${token}`,
+        };
+
+        const response = await api.get("/shows/UserRatedShows", { headers });
+        return response.data;
+      } catch (error) {
+        console.error(error);
+        return [];
+      }
+    },
+
     async getAvailableShows() {
       try {
         const response = await api.get("/shows");
@@ -131,8 +162,14 @@ export default {
         console.error(error);
       }
     },
-    async rateShow(showId) {
+
+    async rateShow(showId, show) {
+      if (show.ratedByUser) {
+        alert("You have already rated this show.");
+        return;
+      }
       try {
+
         const rating = parseFloat(prompt("Enter your rating (0-5):"));
         if (isNaN(rating) || rating < 0 || rating > 5) {
           alert("Invalid rating. Please provide a rating between 0 and 5.");
@@ -159,16 +196,29 @@ export default {
         console.log(response.data);
         alert("Show rated successfully!");
 
-        // Update the average rating and number of ratings on the frontend
-        const ratedShow = this.shows.find((show) => show.id === showId);
-        if (ratedShow) {
-          ratedShow.average_rating = response.data.average_rating;
-          ratedShow.num_ratings = response.data.num_ratings;
-        }
+        // Update the frontend show data with the updated ratings from the response
+        show.average_rating = response.data.average_rating;
+        show.num_ratings = response.data.num_ratings;
+
+        show.ratedByUser = true; // Mark the show as rated by the user
+        this.ratedShows.push(showId); // Add the show ID to the ratedShows list
+
+
       } catch (error) {
         console.error(error);
+        if (error.response && error.response.status === 400) {
+          // Show an alert indicating that the show has already been rated
+
+          alert("You've already rated this show.");
+        } else {
+          // Handle other error cases
+          console.error("An error occurred:", error);
+        }
       }
-    },
+    }
+
+
   },
+
 };
 </script>

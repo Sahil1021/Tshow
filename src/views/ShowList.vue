@@ -3,30 +3,14 @@
     <h1 class="mb-3">Shows List</h1>
     <div class="form-group w-50 mx-auto">
       <label for="dateInput">Filter shows by Date:</label>
-      <input
-        type="date"
-        class="form-control"
-        id="dateInput"
-        v-model="selectedDate"
-        @change="filterShows"
-      />
+      <input type="date" class="form-control" id="dateInput" v-model="selectedDate" @change="filterShows" />
     </div>
     <div class="form-group w-50 mx-auto">
       <label for="theaterInput">Filter shows by Theater Name:</label>
-      <input
-        type="text"
-        class="form-control"
-        id="theaterInput"
-        v-model="theaterInput"
-        @input="searchByTheater"
-      />
+      <input type="text" class="form-control" id="theaterInput" v-model="theaterInput" @input="searchByTheater" />
     </div>
     <div class="row mt-3" v-if="filteredShows.length > 0">
-      <div
-        class="col-12 col-sm-6 col-md-6 mb-4"
-        v-for="show in filteredShows"
-        :key="show.id"
-      >
+      <div class="col-12 col-sm-6 col-md-6 mb-4" v-for="show in filteredShows" :key="show.id">
         <div class="card">
           <div class="card-body">
             <h5 class="card-title text-decoration-underline">
@@ -42,16 +26,10 @@
             <p class="card-text">Description: {{ show.description }}</p>
 
             <div class="d-flex justify-content-center">
-              <router-link
-                :to="{ name: 'EditShow', params: { id: show.id } }"
-                class="btn btn-primary mr-2"
-              >
+              <router-link :to="{ name: 'EditShow', params: { id: show.id } }" class="btn btn-primary mr-2">
                 <i class="fa fa-edit"></i> Edit
               </router-link>
-              <button
-                @click="showDeleteConfirmation(show.id)"
-                class="btn btn-danger ml-2"
-              >
+              <button @click="showDeleteConfirmation(show.id)" class="btn btn-danger ml-2">
                 <i class="fa fa-trash"></i> Delete
               </button>
             </div>
@@ -60,9 +38,7 @@
       </div>
     </div>
     <p v-else>No shows found for the selected date and theater.</p>
-    <router-link to="/shows/create" class="btn btn-primary mb-4"
-      >Create New Show</router-link
-    >
+    <router-link to="/shows/create" class="btn btn-primary mb-4">Create New Show</router-link>
 
     <div v-if="showConfirmationPrompt" class="confirmation-prompt">
       <div class="prompt-container bg-white p-4 rounded">

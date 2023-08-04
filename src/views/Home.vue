@@ -8,7 +8,7 @@
         <p class="lead">Book tickets for your favorite shows</p>
       </div>
       <div class="col-md-6 mb-5 animate__animated animate__fadeIn">
-        <img src="../assets/main2.avif" alt="Movie Tickets" class="img-fluid rounded" />
+        <img src="../assets/main3.jpg" alt="Movie Tickets" class="img-fluid rounded" />
       </div>
     </div>
 

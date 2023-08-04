@@ -19,10 +19,10 @@
                 <i class="fa fa-trash"></i> Delete
               </button>
               <div class="d-flex justify-content-center">
-    <router-link :to="{ name: 'TheatreShows', params: { id: theatre.id } }" class="btn btn-danger ml-2">
-      <i class="fa fa-trash"></i> View shows
-    </router-link>
-  </div>
+                <router-link :to="{ name: 'TheatreShows', params: { id: theatre.id } }" class="btn btn-warning ml-2">
+                  <i class="fa fa-trash"></i> View shows
+                </router-link>
+              </div>
             </div>
           </div>
         </div>

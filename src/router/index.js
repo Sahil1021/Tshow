@@ -15,6 +15,7 @@ import ShowBooking from "../views/ShowBooking.vue";
 import UserBookings from "../views/UserBookings.vue";
 import TheatreShows from "../views/TheatreShows.vue"; // Import the component for displaying shows under a theater
 import dashboard from '../views/dashboard.vue';
+import MonthlyReport from '../views/MonthlyReport.vue';
 
 
 const routes = [
@@ -88,7 +89,10 @@ const routes = [
     name: "dashboard", // Route name
     component: dashboard, // Component for displaying shows under a theater
   },
-
+  {
+    path: '/MonthlyReport',
+    component: MonthlyReport
+  }
   
 ];
 

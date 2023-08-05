@@ -1,11 +1,10 @@
 <template>
-
   <div>
     <h1 class="mt-5">Theatres List</h1>
     <label>Enter Region:</label>
     <input class="form-control w-50 container mb-3" v-model="searchAddress" type="text" />
     <button class="btn btn-primary mb-4" @click="searchTheatres">Search Theatres</button>
-    
+
     <ul v-if="showTheatres && filteredTheatres.length > 0">
       <div class="card w-50 container" v-for="theatre in filteredTheatres" :key="theatre.id">
         <div class="card-body">
@@ -18,25 +17,31 @@
       </div>
     </ul>
     <p v-else-if="showTheatres">No theatres found.</p>
-   
+
     <h1>Shows List</h1>
     <label>Enter Show Name:</label>
     <input class="form-control w-50 container mb-3" v-model="searchShowName" type="text" />
     <label>Enter Genre:</label>
     <input class="form-control w-50 container mb-3" v-model="searchGenre" type="text" />
     <button class="btn btn-primary mb-4" @click="searchShows">Search Shows</button>
-    
+
     <ul v-if="showShows && filteredShows.length > 0">
-        <li class="card w-50 container" v-for="show in filteredShows" :key="show.id">
+      <li class="card w-50 container" v-for="show in filteredShows" :key="show.id">
         <div class="card-body">
-           <h5 class="card-title">Show Name: {{ show.name }}</h5>
-            <p class="card-text">Theatre Name: {{ show.theatre_name }}</p>
-            <p class="card-text">Show Date: {{ show.date }}</p>
-            <p class="card-text">Show Time: {{ show.time }}</p>
+          <h5 class="card-title">Show Name: {{ show.name }}</h5>
+          <p class="card-text">Theatre Name: {{ show.theatre_name }}</p>
+          <p class="card-text">Show Date: {{ show.date }}</p>
+          <p class="card-text">Show Time: {{ show.time }}</p>
         </div>
       </li>
     </ul>
     <p v-else-if="showShows">No shows found.</p>
+    <!-- <button class="btn btn-primary" @click="generateMonthlyReport">Generate Monthly Report</button> -->
+    <br />
+    <router-link to="/MonthlyReport" class="mt-5 btn btn-primary">
+      Generate Monthly Report
+    </router-link>
+
   </div>
 </template>
 
@@ -101,6 +106,8 @@ export default {
       }
     },
   },
+
+
   watch: {
     searchAddress: function (newVal) {
       if (newVal.trim() === "") {

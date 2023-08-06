@@ -1,44 +1,55 @@
 <template>
   <div class="container">
     <h1 class="mt-5">Book Shows</h1>
-    <div class="w-50" v-if="shows.length > 0">
-      <div class="card mb-3" v-for="show in shows" :key="show.id">
-        <div class="card-body">
-          <h5 class="card-title">{{ show.name }}</h5>
-          <p class="card-text">Genre: {{ show.genre }}</p>
-          <p class="card-text">Theater Name: {{ show.theatre_name }}</p>
-          <p class="card-text">Theater address: {{ show.theatre_address }}</p>
-          <p class="card-text">Date: {{ show.date }}</p>
-          <p class="card-text">Show Time: {{ show.time }}</p>
-          <p class="card-text">Ticket Price: {{ show.ticket_price }}</p>
-          <p class="card-text">Description: {{ show.description }}</p>
-          <p class="btn btn-warning" v-if="show.available_seats === 0">
-            Houseful
-          </p>
-          <p v-else-if="show.available_seats !== null">
-            Available Seats: {{ show.available_seats }}
-          </p>
-          <p v-else>Loading...</p>
-          <br />
+    <div class="row">
 
-          <p>Average Rating: {{ show.average_rating.toFixed(2) }}</p>
-          <p>Number of Ratings: {{ show.num_ratings }}</p>
-          <!-- <button @click="rateShow(show.id, show)" class="btn btn-primary">Rate Show</button> -->
-          <button @click="rateShow(show.id, show)" class="btn btn-primary"
-            :disabled="ratedByUser || ratedShows.includes(show.id)">
-            {{ show.ratedByUser ? 'Rated' : 'Rate Show' }}
-          </button>
+      <div class="row" v-if="shows.length > 0">
+        <span><button class="btn btn-primary mb-5" @click="sortByRating">Sort by Rating</button>
+        </span>
+        <div class="col-lg-4 col-md-6 mb-4" v-for="show in shows" :key="show.id">
+          <div class="card">
+            <div class="card-body">
+              <h5 class="card-title">{{ show.name }}</h5>
+              <p class="card-text">Genre: {{ show.genre }}</p>
+              <p class="card-text">Theater Name: {{ show.theatre_name }}</p>
+              <p class="card-text">Theater address: {{ show.theatre_address }}</p>
+              <p class="card-text">Date: {{ show.date }}</p>
+              <p class="card-text">Show Time: {{ show.time }}</p>
+              <p class="card-text">Ticket Price: {{ show.ticket_price }}</p>
+              <p class="card-text">Description: {{ show.description }}</p>
+              <p class="btn btn-warning" v-if="show.available_seats === 0">
+                Houseful
+              </p>
+              <p v-else-if="show.available_seats !== null">
+                Available Seats: {{ show.available_seats }}
+              </p>
+              <p v-else>Loading...</p>
+              <br />
 
-          <button @click="bookShow(show.id)" class="btn btn-success" :disabled="show.available_seats === 0">
-            Book Tickets
-          </button>
+              <p>Average Rating: {{ show.average_rating.toFixed(2) }}</p>
+              <p>Number of Ratings: {{ show.num_ratings }}</p>
 
+              <!-- <button @click="rateShow(show.id, show)" class="btn btn-primary">Rate Show</button> -->
+              <button @click="rateShow(show.id, show)" class="btn btn-primary"
+                :disabled="ratedByUser || ratedShows.includes(show.id)">
+                {{ show.ratedByUser ? 'Rated' : 'Rate Show' }}
+              </button>
+
+              <button @click="bookShow(show.id)" class="btn btn-success" :disabled="show.available_seats === 0">
+                Book Tickets
+              </button>
+
+            </div>
+          </div>
         </div>
       </div>
+      <div class="col-12" v-else>
+        <p>No shows available for booking.</p>
+      </div>
     </div>
-    <p v-else>No shows available for booking.</p>
   </div>
 </template>
+
 
 <script>
 
@@ -215,9 +226,11 @@ export default {
           console.error("An error occurred:", error);
         }
       }
-    }
+    },
 
-
+    sortByRating() {
+      this.shows.sort((a, b) => b.average_rating - a.average_rating);
+    },
   },
 
 };

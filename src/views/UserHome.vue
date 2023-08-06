@@ -18,7 +18,7 @@
     </ul>
     <p v-else-if="showTheatres">No theatres found.</p>
 
-    <h1>Shows List</h1>
+    <h1 class="mt-5">Shows List</h1>
     <label>Enter Show Name:</label>
     <input class="form-control w-50 container mb-3" v-model="searchShowName" type="text" />
     <label>Enter Genre:</label>
@@ -38,7 +38,9 @@
     <p v-else-if="showShows">No shows found.</p>
     <!-- <button class="btn btn-primary" @click="generateMonthlyReport">Generate Monthly Report</button> -->
     <br />
-    <router-link to="/MonthlyReport" class="mt-5 btn btn-primary">
+    <h1 class="mt-5">Monthly Report</h1>
+
+    <router-link to="/MonthlyReport" class="btn btn-primary">
       Generate Monthly Report
     </router-link>
 

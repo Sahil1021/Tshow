@@ -13,21 +13,17 @@
                         <p class="card-text">Genre: {{ show.genre }}</p>
                         <p class="card-text">Ticket Price: {{ show.ticket_price }}</p>
                         <p class="card-text">Available Seats: {{ show.available_seats }}</p>
-
-                        <!-- Check if the show is in the past or if the show time has passed for today's date -->
-                        <button v-if="showBookingClosed(show.date, show.time)" class="btn btn-danger mt-3" disabled>
+                        <p class="btn btn-warning" v-if="show.available_seats === 0">
+                            Houseful
+                        </p>
+                        <br />
+                        <button v-if="showBookingClosed(show.date, show.time)" class="btn btn-danger" disabled>
                             Past Show - Booking Closed
                         </button>
-                        <!-- <button v-else class="btn btn-primary mt-3" @click="bookTicket(show)">
-                            Book Ticket
-
-                        </button> -->
-                        <!-- <div v-if="!showBookingClosed(show.date, show.time)" class="d-flex justify-content-center">
-                            <router-link :to="{ name: 'ShowBooking' }" class="btn btn-success ml-2">
-                                <i class="fa fa-trash"></i>Book shows here
-                            </router-link>
-                        </div> -->
-
+                        <button v-else-if="show.available_seats != 0 && !showBookingClosed(show.date, show.time)"
+                            class="btn btn-primary">
+                            Booking Open
+                        </button>
                     </div>
                 </div>
             </div>

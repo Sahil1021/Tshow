@@ -78,6 +78,7 @@ export default {
     filteredShows() {
       const selectedDate = new Date(this.selectedDate);
       const keyword = this.theaterInput.trim().toLowerCase();
+      const currentDateTime = new Date(); // Get the current date and time
 
       if (!selectedDate.getTime() && !keyword) {
         return this.shows;
@@ -85,20 +86,32 @@ export default {
 
       return this.shows.filter((show) => {
         const showDate = new Date(show.date);
+        const showTime = show.time.split(":"); // Splitting the time string
+        const showDateTime = new Date(showDate);
+
+        // Set the hours and minutes of the showDateTime
+        showDateTime.setHours(Number(showTime[0]), Number(showTime[1]));
+
         const theaterName = show.theatre_name.toLowerCase();
 
         const isDateMatch =
           !selectedDate.getTime() ||
           showDate.toDateString() === selectedDate.toDateString();
 
-        // Use includes for partial theater name match
-        const isTheaterMatch = keyword === "" || theaterName === keyword; // Only display exact matches
+        const isTheaterMatch = keyword === "" || theaterName === keyword;
 
-        return isDateMatch && isTheaterMatch;
+        // Compare the combined date and time of the show against the current date and time
+        const isFutureShow = showDateTime > currentDateTime;
+
+        return isDateMatch && isTheaterMatch && isFutureShow;
       });
     },
   },
   methods: {
+    hasShowPassed(showDateTime) {
+      const currentDateTime = new Date();
+      return showDateTime < currentDateTime;
+    },
     async getShows() {
       try {
         const response = await api.get("/shows");

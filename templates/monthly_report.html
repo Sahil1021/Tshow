@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Monthly Report</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        h2 {
+            margin-top: 10px;
+            font-size: 18px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th,
+        td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Monthly Report - {{ month }}/{{ year }}</h1>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Show Name</th>
+                <th>Booking Date</th>
+                <th>Number of Tickets</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for booking in report_data %}
+            <tr>
+                <td>{{ booking.show.name }}</td>
+                <td>{{ booking.booking_date }}</td>
+                <td>{{ booking.num_tickets }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+
+</html>

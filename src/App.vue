@@ -8,7 +8,9 @@
           aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
         </button>
+        <span class="navbar-brand">Tshow</span>
         <div class="collapse navbar-collapse justify-content-center" id="navbarNav">
+
           <ul class="navbar-nav">
             <router-link class="navbar-brand" to="/">Home</router-link>
 

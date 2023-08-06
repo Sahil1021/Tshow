@@ -1,19 +1,27 @@
 <template>
   <div class="container mt-5">
     <!-- Header Section -->
+    <div v-if="isAuthenticated" class="d-flex justify-content-end">
+      <p class="text-muted">Welcome, {{ userName }}!!</p>
+    </div>
+    <div v-else class="d-flex justify-content-end">
+      <p>Please LogIn</p>
+    </div>
     <div class="row align-items-center">
       <div class="col-md-6">
+
         <h1>Welcome to Tshow</h1>
         <h3>Book Your Movie Tickets Now! Enjoy the Latest Blockbusters with Easy Booking</h3>
         <p class="lead">Book tickets for your favorite shows</p>
       </div>
+
       <div class="col-md-6 mb-5 animate__animated animate__fadeIn">
         <img src="../assets/main3.jpg" alt="Movie Tickets" class="img-fluid rounded" />
       </div>
     </div>
 
     <!-- Information Cards Section -->
-    <div class="row mt-5">
+    <!-- <div class="row mt-5">
       <div class="col-md-4 mb-4 animate__animated animate__bounceIn">
         <div class="card h-100">
           <img src="../assets/home5.jpg" class="card-img-top " alt="Card 1">
@@ -52,17 +60,49 @@
           </div>
         </div>
       </div>
-    </div>
+    </div> -->
   </div>
 </template>
 
 <script>
 import 'animate.css';
+import api from "../api";
+
 export default {
   name: "Home",
+  data() {
+    return {
+      isAuthenticated: false,
+      userName: "",
+    };
+  },
+  created() {
+    this.checkAuthentication();
+  },
+  methods: {
+    async checkAuthentication() {
+      const accessToken = localStorage.getItem("access_token");
+      if (accessToken) {
+        try {
+          const response = await api.get("/profile", {
+            headers: {
+              Authorization: `Bearer ${accessToken}`,
+            },
+          });
+          console.log("Profile Response:", response.data);
+          this.isAuthenticated = true;
+          this.userName = response.data.username;
+        } catch (error) {
+          console.error(error);
+        }
+      } else {
+        // Reset state if not authenticated
+        this.isAuthenticated = false;
+        this.userName = "";
+      }
+    },
+  },
+
 };
 </script>
 
-<style>
-/* Custom styles can be added here */
-</style>

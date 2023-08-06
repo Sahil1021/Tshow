@@ -18,12 +18,7 @@
       <input class="form-control" v-model="showTime" type="time" required />
       <br />
       <label>Ticket Price:</label>
-      <input
-        class="form-control"
-        v-model="ticketPrice"
-        type="number"
-        required
-      />
+      <input class="form-control" v-model="ticketPrice" type="number" required />
       <br />
       <label>Description:</label>
       <textarea class="form-control" v-model="showDescription"></textarea>

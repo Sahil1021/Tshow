@@ -97,14 +97,17 @@ export default {
         this.showShows = false;
         this.filteredShows = [];
       } else {
+        const showNamePattern = new RegExp(`^${this.searchShowName.trim()}`, 'i');
         this.filteredShows = this.shows.filter(
           (show) =>
-            show.name.toLowerCase().includes(this.searchShowName.toLowerCase()) &&
-            show.genre.toLowerCase().includes(this.searchGenre.toLowerCase())
+            (show.name.match(showNamePattern)) &&
+            (this.searchGenre.trim() === "" || show.genre.toLowerCase().includes(this.searchGenre.toLowerCase()))
         );
         this.showShows = true;
       }
     },
+
+
   },
 
 

@@ -69,51 +69,6 @@ export default {
                 console.error('Error generating report:', error);
             }
         },
-
-        openPDFReport() {
-            if (this.reportUrl) {
-                // Open the PDF report in a new browser tab
-                const blob = new Blob([response], { type: 'application/pdf' });
-
-            }
-        },
-        async downloadPDF() {
-            try {
-                const access_token = localStorage.getItem('access_token');
-                if (!access_token) {
-                    console.error('User not authenticated. Please log in first.');
-                    return;
-                }
-
-                const response = await axios.get(
-                    `http://localhost:5000/generate_monthly_report/${this.year}/${this.month}`,
-                    {
-                        responseType: 'arraybuffer',
-                        withCredentials: true,
-                        headers: {
-                            Authorization: `Bearer ${access_token}`,
-                        },
-                    }
-                );
-
-                if (response.data instanceof ArrayBuffer) {
-                    // Create a blob from the response data
-                    const blob = new Blob([response.data], { type: 'application/pdf' });
-                    // Create an object URL for the blob
-                    const objectUrl = URL.createObjectURL(blob);
-                    // Create a download link and simulate a click to trigger the download
-                    const link = document.createElement('a');
-                    link.href = objectUrl;
-                    link.download = `monthly_report_${this.year}_${this.month}.pdf`;
-                    link.click();
-                } else {
-                    console.error('Invalid PDF response from the server');
-                }
-
-            } catch (error) {
-                console.error('Error generating report:', error);
-            }
-        },
     },
 };
 </script>

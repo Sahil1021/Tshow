@@ -58,10 +58,10 @@ export default {
 
                 if (response.data instanceof ArrayBuffer) { // Check if response data is an ArrayBuffer
                     // Display the PDF in a new browser tab
-                    const blob = new Blob([response.data], { type: 'application/pdf' });
+                    const blob = new Blob([response.data], { type: 'application' });
                     this.reportUrl = URL.createObjectURL(blob);
                 } else {
-                    console.error('Invalid PDF response from the server');
+                    console.error('Invalid response from the server');
                     this.reportUrl = null; // Clear the report URL if it's not a PDF
                 }
 

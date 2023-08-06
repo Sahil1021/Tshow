@@ -83,13 +83,14 @@ export default {
       return response.data;
     },
     searchTheatres() {
-      if (this.searchAddress.trim() === "") {
+      const searchQuery = this.searchAddress.trim().toLowerCase();
+
+      if (searchQuery === "") {
         this.showTheatres = false;
         this.filteredTheatres = [];
       } else {
-        this.filteredTheatres = this.theatres.filter(
-          (theatre) =>
-            theatre.address.toLowerCase() === this.searchAddress.toLowerCase()
+        this.filteredTheatres = this.theatres.filter((theatre) =>
+          theatre.address.toLowerCase().includes(searchQuery)
         );
         this.showTheatres = true;
       }

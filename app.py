@@ -4,23 +4,23 @@ from flask_jwt_extended import JWTManager, create_access_token, jwt_required, ge
 from flask_cors import CORS
 from flask_migrate import Migrate
 from datetime import datetime
-from datetime import datetime, timezone, timedelta, date
+from datetime import datetime, timedelta
 import pytz
 from flask_mail import Mail, Message
 from flask_rq2 import RQ
-from rq.worker import Worker
-import schedule
+# from rq.worker import Worker
+# import schedule
 import time
 import threading
 import redis
 from rq_scheduler import Scheduler as rq_scheduler
 from rq import Worker, Queue, Connection
-from rq.job import Job
-from rq.registry import StartedJobRegistry
+# from rq.job import Job
+# from rq.registry import StartedJobRegistry
 import csv
 from io import StringIO
-import pdfkit
-import os
+# import pdfkit
+# import os
 
 scheduler_thread = None
 worker_thread = None
@@ -163,7 +163,6 @@ class Rating(db.Model):
         }
 
 
-from flask import make_response
 
 @app.route('/generate_monthly_report/<int:year>/<int:month>', methods=['GET'])
 @jwt_required()
@@ -206,19 +205,6 @@ def get_user_monthly_report_data(user_id, year, month):
 
     return booked_shows_list
 
-
-def get_user_monthly_report_data(user_id, year, month):
-    # Retrieve data for the report
-    booked_shows = Booking.query.filter(
-        Booking.user_id == user_id,
-        db.extract('year', Booking.booking_date) == year,
-        db.extract('month', Booking.booking_date) == month,
-    ).all()
-
-    # Convert the booking data to a list of dictionaries
-    booked_shows_list = [booking.to_dict() for booking in booked_shows]
-
-    return booked_shows_list
 
 @app.route('/api/shows/<int:show_id>/rate', methods=['POST'])
 @jwt_required()
@@ -310,27 +296,20 @@ def book_show(show_id):
         verify_jwt_in_request()
         data = request.json
         num_tickets = data.get("numTickets")
-
         if num_tickets is None or not isinstance(num_tickets, int) or num_tickets <= 0:
             return jsonify({"error": "Invalid number of tickets. Please provide a positive integer value."}), 422
-
         show = Show.query.get(show_id)
         if not show:
             return jsonify({"error": "Show not found."}), 404
 
         if num_tickets > show.available_seats:
             return jsonify({"error": "Not enough available seats."}), 409
-
-        current_user_id = get_jwt_identity()  # Get the current user ID from the JWT token
-
+        current_user_id = get_jwt_identity()  
         booking = Booking(user_id=current_user_id, show_id=show_id, num_tickets=num_tickets)
         db.session.add(booking)
         db.session.commit()
-
-        # Update available seats for the show
         show.available_seats -= num_tickets
         db.session.commit()
-
         return jsonify({"message": "Show booked successfully!"}), 200
     except Exception as e:
         return jsonify({"message": str(e)}), 500

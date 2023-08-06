@@ -56,8 +56,8 @@ export default {
                     }
                 );
 
-                if (response.data instanceof ArrayBuffer) { // Check if response data is an ArrayBuffer
-                    // Display the PDF in a new browser tab
+                if (response.data instanceof ArrayBuffer) {
+
                     const blob = new Blob([response.data], { type: 'application' });
                     this.reportUrl = URL.createObjectURL(blob);
                 } else {

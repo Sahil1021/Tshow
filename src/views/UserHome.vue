@@ -90,7 +90,7 @@ export default {
         this.filteredTheatres = [];
       } else {
         this.filteredTheatres = this.theatres.filter((theatre) =>
-          theatre.address.toLowerCase().includes(searchQuery)
+          theatre.address.toLowerCase().split(' ').some(part => part === searchQuery)
         );
         this.showTheatres = true;
       }
@@ -100,7 +100,7 @@ export default {
         this.showShows = false;
         this.filteredShows = [];
       } else {
-        const showNamePattern = new RegExp(`^${this.searchShowName.trim()}`, 'i');
+        const showNamePattern = new RegExp(`\\b${this.searchShowName.trim()}\\b`, 'i');
         this.filteredShows = this.shows.filter(
           (show) =>
             (show.name.match(showNamePattern)) &&
@@ -109,7 +109,6 @@ export default {
         this.showShows = true;
       }
     },
-
 
   },
 

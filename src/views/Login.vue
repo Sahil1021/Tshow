@@ -7,15 +7,16 @@
           <div class="row align-items-center">
             <!-- Left Column with Image -->
             <div class="col-md-6">
-              <img src="../assets/login.svg" 
-              alt="Login Image"
-              class="img-fluid rounded"
-              />
+              <img src="../assets/login.svg" alt="Login Image" class="img-fluid rounded" />
             </div>
 
             <!-- Right Column with Form -->
             <div class="col-md-6 ri">
               <h1 class="mb-3">Login</h1>
+              <div v-if="errorMessage" class="alert alert-danger mb-3">
+                {{ errorMessage }}
+              </div>
+
               <form @submit.prevent="login">
                 <label>Username:</label>
                 <input class="form-control mb-3" v-model="username" type="text" required />
@@ -27,6 +28,7 @@
               </form>
 
               <p>Don't have an account? <router-link to="/signup">Signup here</router-link></p>
+
             </div>
           </div>
         </div>
@@ -43,6 +45,7 @@ export default {
     return {
       username: "",
       password: "",
+      errorMessage: "",
     };
   },
   methods: {
@@ -57,8 +60,11 @@ export default {
         localStorage.setItem("role", role);
         this.$root.isAuthenticated = true;
         this.$root.userRole = role;
+
         this.$router.push("/profile");
       } catch (error) {
+        // Set the error message to be displayed
+        this.errorMessage = "Invalid credentials. Please try again.";
         console.error(error);
       }
     },
@@ -68,8 +74,7 @@ export default {
 
 <style>
 /* Custom styles can be added here if needed */
-.ri{
-      width: 35% !important;
+.ri {
+  width: 35% !important;
 }
-
 </style>

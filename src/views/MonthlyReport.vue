@@ -14,14 +14,10 @@
         </form>
 
         <div v-if="reportUrl">
-            <h2>Generated Report</h2>
-            <!-- Change the button text and behavior to download HTML report -->
-            <a :href="reportUrl" download="monthly_report.html" target="_blank" class="mt-5 btn btn-primary">Download HTML
-                Report</a>
-
-
+            <h2 class="mt-5">Report Generated and sent via your registered mail</h2>
+            <!-- <a :href="reportUrl" download="monthly_report.html" target="_blank" class="mt-5 btn btn-primary">Download HTML
+                Report</a> -->
         </div>
-
     </div>
 </template>
 
@@ -33,11 +29,17 @@ export default {
         return {
             year: '',
             month: '',
-            reportUrl: null, // Initialize with null
+            reportUrl: null,
         };
     },
     methods: {
         async generateMonthlyReport() {
+
+            if (this.year < 1900 || this.year > 9999 || this.month < 1 || this.month > 12) {
+                console.error('Invalid year or month');
+                return;
+            }
+
             try {
                 const access_token = localStorage.getItem('access_token');
                 if (!access_token) {
@@ -48,7 +50,7 @@ export default {
                 const response = await axios.get(
                     `http://localhost:5000/generate_monthly_report/${this.year}/${this.month}`,
                     {
-                        responseType: 'arraybuffer', // Change to arraybuffer
+                        responseType: 'arraybuffer',
                         withCredentials: true,
                         headers: {
                             Authorization: `Bearer ${access_token}`,
@@ -57,12 +59,11 @@ export default {
                 );
 
                 if (response.data instanceof ArrayBuffer) {
-
                     const blob = new Blob([response.data], { type: 'application' });
                     this.reportUrl = URL.createObjectURL(blob);
                 } else {
                     console.error('Invalid response from the server');
-                    this.reportUrl = null; // Clear the report URL if it's not a PDF
+                    this.reportUrl = null;
                 }
 
             } catch (error) {

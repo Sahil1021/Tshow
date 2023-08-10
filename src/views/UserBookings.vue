@@ -19,7 +19,7 @@
                         <p class="card-text btn btn-success">Total Amount Paid: {{
                             calculateTotalAmount(booking.show.ticket_price, booking.num_tickets) }}</p>
                         <p class="card-text">Booked On: {{ booking.booking_date }}</p>
-                        
+
                         <!-- <p class="card-text">Booked By: {{ booking.user_id }}</p> Display the username here -->
                     </div>
                 </div>
@@ -97,7 +97,7 @@ export default {
                 return 'Invalid Date';
             }
         },
-        
+
     },
     computed: {
         calculateTotalAmount() {

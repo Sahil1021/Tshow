@@ -39,7 +39,7 @@
 
               <template v-if="userRole === 'admin'">
                 <li class="nav-item">
-                  <router-link class="nav-link" to="/adminhome">Admin Home</router-link>
+                  <router-link class="nav-link" to="/profile">Admin Home</router-link>
                 </li>
                 <li class="nav-item">
                   <router-link class="nav-link" to="/theatres">Manage Theatres</router-link>

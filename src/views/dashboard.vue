@@ -10,7 +10,7 @@
 </template>
 
 <script>
-import api from "../api"; // Import your axios instance configured with baseURL
+import api from "../api";
 
 export default {
     data() {

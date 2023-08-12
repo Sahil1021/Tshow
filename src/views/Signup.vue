@@ -7,14 +7,11 @@
           <div class="row align-items-center">
             <!-- Left Column with Image -->
             <div class="col-md-6">
-              <img src="../assets/signup.jpg" 
-              alt="Signup Image"
-              class="img-fluid rounded"
-              />
+              <img src="../assets/signup.jpg" alt="Signup Image" class="img-fluid rounded" />
             </div>
 
             <!-- Right Column with Form -->
-            <div class="ri col-md-6" >
+            <div class="ri col-md-6">
               <h1>Signup</h1>
               <form @submit.prevent="signup">
                 <label>Username:</label>
@@ -38,7 +35,7 @@
                 <button class="btn btn-primary" type="submit">Signup</button>
               </form>
 
-              <p >Already have an account? <router-link to="/login">Login here</router-link></p>
+              <p>Already have an account? <router-link to="/login">Login here</router-link></p>
             </div>
           </div>
         </div>
@@ -88,7 +85,7 @@ export default {
 
 
 <style>
-.ri{
+.ri {
   width: 35% !important;
 }
 </style>

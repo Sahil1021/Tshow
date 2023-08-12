@@ -7,7 +7,7 @@
           <div class="row align-items-center">
             <!-- Left Column with Image -->
             <div class="col-md-6">
-              <img src="../assets/login.svg" alt="Login Image" class="img-fluid rounded" />
+              <img src="../assets/login.png" alt="Login Image" class="img-fluid rounded" />
             </div>
 
             <!-- Right Column with Form -->

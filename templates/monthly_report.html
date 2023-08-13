@@ -48,7 +48,13 @@
         <thead>
             <tr>
                 <th>Show Name</th>
+                <th>Theatre Name</th>
+                <th>Location</th>
+                <th>Show Date</th>
+                <th>Show Time</th>
+                <th>Show genre</th>
                 <th>Booking Date</th>
+                <th>Price per Ticket</th>
                 <th>Number of Tickets</th>
             </tr>
         </thead>
@@ -56,7 +62,13 @@
             {% for booking in report_data %}
             <tr>
                 <td>{{ booking.show.name }}</td>
+                <td>{{ booking.show.theatre_name }}</td>
+                <td>{{ booking.show.theatre_address }}</td>
+                <td>{{ booking.show.date }}</td>
+                <td>{{ booking.show.time }}</td>
+                <td>{{ booking.show.genre }}</td>
                 <td>{{ booking.booking_date }}</td>
+                <td>{{ booking.show.ticket_price }}</td>
                 <td>{{ booking.num_tickets }}</td>
             </tr>
             {% endfor %}
